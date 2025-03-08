@@ -1,0 +1,5 @@
+{
+  "site": "dist",
+  "bundleDirectory": "static/pagefind",
+  "excludeSelectors": ["aside", "nav", "header", "footer"]
+} 
