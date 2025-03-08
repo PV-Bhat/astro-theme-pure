@@ -9,7 +9,7 @@ import { Comment, MediumZoom } from 'astro-pure/advanced'
 import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
 import PageLayout from '@/layouts/ContentLayout.astro'
 import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
-import { integ } from '@/site-config'
+import config, { integ } from '../site.config'
 
 interface Props {
   post: CollectionEntry<'blog'>

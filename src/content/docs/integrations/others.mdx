@@ -4,6 +4,7 @@ description: 'Other integrations that help improve your site'
 ---
 
 import { Aside, Tabs, TabItem, Steps } from 'astro-pure/user'
+import config from '../../../site.config'
 
 <Aside>Docs are still in progress.</Aside>
 
@@ -157,7 +158,7 @@ Common Pitfalls and Solutions:
 
 - CSS Styling Issues
   
-  Problem: LaTeX formulas might not render with the correct styles if the KaTeX CSS isn’t loaded.
+  Problem: LaTeX formulas might not render with the correct styles if the KaTeX CSS isn't loaded.
 
   Solution: Confirm the KaTeX stylesheet link is correctly placed in the HTML head and is loading without issues. Check for network errors or restrictions that might prevent the CSS from loading.
 

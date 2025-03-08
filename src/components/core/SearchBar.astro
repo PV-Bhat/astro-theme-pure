@@ -19,24 +19,12 @@ const { placeholder = "Search posts and projects..." } = Astro.props;
 </div>
 
 <script>
-  interface SearchResult {
-    url: string;
-    title: string;
-    excerpt: string;
-  }
-
-  interface SearchResponse {
-    results: SearchResult[];
-  }
-
-  interface PagefindModule {
-    search: (query: string) => Promise<SearchResponse>;
-  }
+  import type { SearchResult } from '@pagefind/default-ui';
 
   // Initialize pagefind
   window.addEventListener('DOMContentLoaded', async () => {
     try {
-      const pagefind = await import('/pagefind/pagefind.js') as Promise<PagefindModule>;
+      const { default: pagefind } = await import('@pagefind/default-ui');
       
       const input = document.getElementById('search-input') as HTMLInputElement;
       const results = document.getElementById('search-results');
@@ -50,7 +38,7 @@ const { placeholder = "Search posts and projects..." } = Astro.props;
               const searchResults = await pagefind.search(query);
               // Display results
               results.innerHTML = searchResults.results
-                .map(result => `
+                .map((result: SearchResult) => `
                   <a href="${result.url}" class="search-result">
                     <h3>${result.title}</h3>
                     <p>${result.excerpt}</p>

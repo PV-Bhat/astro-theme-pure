@@ -5,9 +5,10 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["astro/client"],
+    "typeRoots": ["./src/@types", "./node_modules/@types"],
+    "types": ["@pagefind/default-ui"],
     "jsx": "preserve",
-    "jsxImportSource": "astro",
+    "jsxImportSource": "react",
     "verbatimModuleSyntax": true,
     "moduleResolution": "bundler",
     "module": "ESNext",
