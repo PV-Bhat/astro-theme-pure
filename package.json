@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:check": "astro check --watch & astro dev",
-    "build": "astro build && pagefind --config pagefind.config.json",
+    "build": "astro build && npx pagefind --site dist --bundle-dir static/pagefind",
     "preview": "astro preview",
     "sync": "astro sync",
     "check": "astro check",

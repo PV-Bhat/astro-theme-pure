@@ -19,12 +19,10 @@ const { placeholder = "Search posts and projects..." } = Astro.props;
 </div>
 
 <script>
-  import type { SearchResult } from '@pagefind/default-ui';
-
   // Initialize pagefind
   window.addEventListener('DOMContentLoaded', async () => {
     try {
-      const { default: pagefind } = await import('/static/pagefind/pagefind.js');
+      const pagefind = await import('@pagefind/default-ui').then(module => module.default);
       
       const input = document.getElementById('search-input') as HTMLInputElement;
       const results = document.getElementById('search-results');
@@ -38,7 +36,7 @@ const { placeholder = "Search posts and projects..." } = Astro.props;
               const searchResults = await pagefind.search(query);
               // Display results
               results.innerHTML = searchResults.results
-                .map((result: SearchResult) => `
+                .map((result: any) => `
                   <a href="${result.url}" class="search-result">
                     <h3>${result.title}</h3>
                     <p>${result.excerpt}</p>

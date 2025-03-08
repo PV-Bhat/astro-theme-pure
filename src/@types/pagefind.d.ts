@@ -11,6 +11,7 @@ declare module '@pagefind/default-ui' {
 
   interface PagefindModule {
     search: (query: string) => Promise<SearchResponse>;
+    init: () => Promise<void>;
   }
 
   const pagefind: PagefindModule;

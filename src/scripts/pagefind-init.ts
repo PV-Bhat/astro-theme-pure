@@ -1,7 +1,7 @@
 // Initialize Pagefind
 export async function initPagefind() {
   try {
-    const { default: pagefind } = await import('/static/pagefind/pagefind.js');
+    const pagefind = await import('@pagefind/default-ui').then(module => module.default);
     await pagefind.init();
     return pagefind;
   } catch (error) {
