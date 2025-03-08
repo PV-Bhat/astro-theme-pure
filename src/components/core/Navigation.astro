@@ -297,6 +297,11 @@ const { class: className } = Astro.props;
 
 <script>
   class NavigationComponent extends HTMLElement {
+    private header: HTMLElement | null;
+    private mobileMenuToggle: HTMLElement | null;
+    private mobileMenuClose: HTMLElement | null;
+    private mobileMenu: HTMLElement | null;
+
     constructor() {
       super();
       
@@ -310,7 +315,7 @@ const { class: className } = Astro.props;
       this.init();
     }
     
-    init() {
+    private init(): void {
       // Scroll event for header
       window.addEventListener('scroll', this.handleScroll.bind(this));
       this.handleScroll(); // Initial check
@@ -341,7 +346,7 @@ const { class: className } = Astro.props;
       });
     }
     
-    handleScroll() {
+    private handleScroll(): void {
       if (window.scrollY > 20) {
         this.classList.add('not-top');
       } else {
@@ -349,16 +354,20 @@ const { class: className } = Astro.props;
       }
     }
     
-    openMobileMenu() {
-      document.body.style.overflow = 'hidden';
-      this.mobileMenu.classList.remove('invisible', 'opacity-0');
-      this.mobileMenu.classList.add('visible', 'opacity-100');
+    private openMobileMenu(): void {
+      if (this.mobileMenu) {
+        document.body.style.overflow = 'hidden';
+        this.mobileMenu.classList.remove('invisible', 'opacity-0');
+        this.mobileMenu.classList.add('visible', 'opacity-100');
+      }
     }
     
-    closeMobileMenu() {
-      document.body.style.overflow = '';
-      this.mobileMenu.classList.remove('visible', 'opacity-100');
-      this.mobileMenu.classList.add('invisible', 'opacity-0');
+    private closeMobileMenu(): void {
+      if (this.mobileMenu) {
+        document.body.style.overflow = '';
+        this.mobileMenu.classList.remove('visible', 'opacity-100');
+        this.mobileMenu.classList.add('invisible', 'opacity-0');
+      }
     }
   }
   
