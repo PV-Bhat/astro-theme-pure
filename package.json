@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "dev:check": "astro check --watch & astro dev",
-    "build": "astro build && npx pagefind --site dist --bundle-dir static/pagefind",
+    "build": "astro build && npx pagefind --site dist",
     "preview": "astro preview",
     "sync": "astro sync",
     "check": "astro check",
@@ -20,7 +20,7 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/rss": "^4.0.11",
-    "@astrojs/vercel": "^8.0.3",
+    "@astrojs/netlify": "^5.1.3",
     "@pagefind/default-ui": "^1.3.0",
     "@playform/compress": "^0.1.7",
     "@unocss/reset": "^65.4.3",

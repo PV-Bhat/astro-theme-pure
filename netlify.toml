@@ -3,4 +3,18 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18.17.1" 
+  NODE_VERSION = "20"
+
+# This redirect is crucial for SPA/client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Ensure all files get proper headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block" 
