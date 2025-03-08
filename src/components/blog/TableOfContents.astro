@@ -1,0 +1,168 @@
+---
+// TableOfContents.astro - adds animated TOC for blog posts
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  class?: string;
+}
+
+const { headings, class: className = "" } = Astro.props;
+
+// Filter headings to only include h2 and h3
+const filteredHeadings = headings.filter(
+  (heading) => heading.depth >= 2 && heading.depth <= 3
+);
+---
+
+<toc-component class={`${className}`}>
+  <div class="sticky top-24 overflow-hidden">
+    <h3 class="font-semibold mb-4 text-white">TABLE OF CONTENTS</h3>
+    
+    <nav class="toc-container">
+      <ul class="space-y-2 text-sm">
+        {filteredHeadings.map((heading) => (
+          <li class={`toc-item relative ${heading.depth === 3 ? "ml-3" : ""}`}>
+            <div class="toc-progress absolute left-0 top-0 w-[2px] h-0 bg-gradient-to-b from-[#56bdf8] to-[#ec4899] rounded-full"></div>
+            <a 
+              href={`#${heading.slug}`} 
+              class="toc-link block py-1 pl-3 rounded-md text-gray-400 hover:text-white transition-colors"
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</toc-component>
+
+<style>
+  .toc-item {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .toc-link {
+    position: relative;
+    display: block;
+    transition: all 0.3s ease;
+  }
+  
+  .toc-link.active {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+    transform: translateX(2px);
+  }
+  
+  .toc-progress {
+    transition: height 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .toc-progress.readed {
+    height: 100%;
+    opacity: 0.5;
+  }
+  
+  .toc-progress.active {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  class TOCComponent extends HTMLElement {
+    headings: HTMLElement[] = [];
+    tocLinks: {
+      element: HTMLAnchorElement;
+      progressBar: HTMLElement;
+      slug: string;
+    }[] = [];
+    headingProgress: Record<string, { inView: boolean; progress: number }> = {};
+    
+    constructor() {
+      super();
+      
+      // Initialize headings and TOC links after the document has loaded
+      window.addEventListener('load', () => {
+        this.init();
+      });
+    }
+    
+    init() {
+      // Find all headings in the content
+      this.headings = Array.from(
+        document.querySelectorAll('article h2, article h3')
+      );
+      
+      // Get all TOC links
+      this.tocLinks = Array.from(this.querySelectorAll('.toc-link')).map((link) => {
+        const anchor = link as HTMLAnchorElement;
+        return {
+          element: anchor,
+          progressBar: anchor.previousElementSibling as HTMLElement,
+          slug: (anchor.getAttribute('href') || '').substring(1)
+        };
+      });
+      
+      // Add scroll event handler
+      this.updatePositionsAndStyles();
+      window.addEventListener('scroll', () => {
+        this.updatePositionsAndStyles();
+      });
+      
+      // Add smooth scrolling
+      this.tocLinks.forEach(({ element, slug }) => {
+        element.addEventListener('click', (e) => {
+          e.preventDefault();
+          const headingElement = document.getElementById(slug);
+          
+          if (headingElement) {
+            window.history.pushState(null, '', `#${slug}`);
+            headingElement.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    }
+    
+    updatePositionsAndStyles() {
+      const windowHeight = window.innerHeight;
+      const pageOffset = window.scrollY;
+      
+      // Calculate heading positions and progress
+      this.headings.forEach((heading, index) => {
+        const nextHeadingTop = this.headings[index + 1]?.offsetTop || document.body.scrollHeight;
+        const headingRect = heading.getBoundingClientRect();
+        const headingTop = headingRect.top + window.scrollY;
+        
+        // Calculate range and progress
+        const range = [
+          headingTop - pageOffset, 
+          nextHeadingTop - pageOffset - heading.offsetHeight
+        ];
+        const progress = (windowHeight - range[0]) / (range[1] - range[0]);
+        
+        this.headingProgress[heading.id] = {
+          inView: range[0] < windowHeight && range[1] > 0,
+          progress: Math.max(0, Math.min(1, progress))
+        };
+      });
+      
+      // Update TOC link styles based on progress
+      this.tocLinks.forEach(({ element, progressBar, slug }) => {
+        const { inView, progress } = this.headingProgress[slug] || { inView: false, progress: 0 };
+        
+        element.classList.toggle('active', inView);
+        progressBar.classList.toggle('active', inView);
+        progressBar.classList.toggle('readed', !inView && progress >= 1);
+        
+        if (inView || progress >= 1) {
+          progressBar.style.height = `${Math.min(progress * 100, 100)}%`;
+        } else {
+          progressBar.style.height = '0%';
+        }
+      });
+    }
+  }
+  
+  customElements.define('toc-component', TOCComponent);
+</script> 

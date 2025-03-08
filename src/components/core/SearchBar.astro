@@ -1,0 +1,124 @@
+---
+interface Props {
+  placeholder?: string;
+}
+
+const { placeholder = "Search posts and projects..." } = Astro.props;
+---
+
+<div class="search-container">
+  <div id="search" class="search-box">
+    <input 
+      type="text" 
+      id="search-input" 
+      placeholder={placeholder}
+      class="search-input"
+    />
+    <div id="search-results" class="search-results"></div>
+  </div>
+</div>
+
+<script>
+  // Initialize pagefind
+  window.addEventListener('DOMContentLoaded', async () => {
+    const { search } = await import('/pagefind/pagefind.js');
+    
+    const input = document.getElementById('search-input');
+    const results = document.getElementById('search-results');
+    
+    if (input && results) {
+      input.addEventListener('input', async (e) => {
+        const query = e.target.value;
+        if (query.length > 2) {
+          const searchResults = await search(query);
+          // Display results
+          results.innerHTML = searchResults.results
+            .map(result => `
+              <a href="${result.url}" class="search-result">
+                <h3>${result.title}</h3>
+                <p>${result.excerpt}</p>
+              </a>
+            `)
+            .join('');
+        } else {
+          results.innerHTML = '';
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  .search-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .search-box {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-color-light);
+  }
+
+  .search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 50;
+  }
+
+  .search-result {
+    display: block;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    text-decoration: none;
+    color: var(--text-color);
+    transition: background-color 0.2s ease;
+  }
+
+  .search-result:last-child {
+    border-bottom: none;
+  }
+
+  .search-result:hover {
+    background-color: var(--bg-color-hover);
+  }
+
+  .search-result h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .search-result p {
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    color: var(--text-color-light);
+  }
+</style> 

@@ -1,0 +1,164 @@
+---
+import { getCollection } from 'astro:content';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import BaseHead from '@/components/BaseHead.astro';
+import PostCard from '@/components/core/PostCard.astro';
+import TagCloud from '@/components/core/TagCloud.astro';
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro';
+import config from '@/site-config';
+import type { CollectionEntry } from 'astro:content';
+
+// Import styles directly using relative paths instead of aliases
+import '../../styles/animations.css';
+import '../../styles/glass.css';
+
+export async function getStaticPaths() {
+  try {
+    // Using direct getCollection to ensure we have consistent logic
+    const posts = await getCollection('blog', ({ data }) => !data.draft);
+    const projects = await getCollection('projects', ({ data }) => !data.draft);
+    
+    const allItems = [...posts, ...projects];
+    // Get unique tags and ensure they're trimmed and lowercased for consistency
+    const uniqueTags = [...new Set(allItems.flatMap(item => 
+      (item.data.tags || []).map(tag => tag.trim().toLowerCase())
+    ))];
+    
+    // Map each unique tag to a route with filtered posts and projects
+    return uniqueTags.map(tag => ({
+      params: { tag },
+      props: {
+        posts: posts.filter(post => 
+          post.data.tags && 
+          post.data.tags.some(t => t.trim().toLowerCase() === tag)
+        ),
+        projects: projects.filter(project => 
+          project.data.tags && 
+          project.data.tags.some(t => t.trim().toLowerCase() === tag)
+        ),
+        tag
+      }
+    }));
+  } catch (error) {
+    console.error('Error generating tag pages:', error);
+    return [];
+  }
+}
+
+// Add prerender directive to ensure static generation
+export const prerender = true;
+
+// Get URL params and props
+const { tag } = Astro.params;
+const { posts, projects } = Astro.props;
+
+// Get all unique tags for the tag cloud
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+const allItems = [...allPosts, ...allProjects];
+const allTags = [...new Set(allItems.flatMap(item => 
+  (item.data.tags || []).map(tag => tag.trim().toLowerCase())
+))];
+
+// Calculate tag counts
+const tagCounts = allTags.reduce((acc, tag) => {
+  acc[tag] = allItems.filter(item => 
+    item.data.tags && 
+    item.data.tags.some(t => t.trim().toLowerCase() === tag)
+  ).length;
+  return acc;
+}, {} as Record<string, number>);
+
+const title = `Posts tagged with #${tag}`;
+const description = `Browse all posts and projects tagged with #${tag}.`;
+
+// Breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "Tags",
+    href: "/tags"
+  },
+  {
+    label: tag || '',
+    href: `/tags/${tag}`
+  }
+];
+
+// Sort posts by date
+const sortedPosts = posts && posts.length > 0 
+  ? [...posts].sort((a, b) => 
+      new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime()
+    )
+  : [];
+
+// Sort projects by date
+const sortedProjects = projects && projects.length > 0 
+  ? [...projects].sort((a, b) => 
+      new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime()
+    )
+  : [];
+
+console.log(`Tag: ${tag}, Posts: ${sortedPosts.length}, Projects: ${sortedProjects.length}`);
+---
+
+<html lang={config.locale.lang}>
+  <head>
+    <BaseHead 
+      articleDate={undefined} 
+      description={description} 
+      ogImage={undefined} 
+      title={title} 
+    />
+  </head>
+
+  <body class='flex justify-center bg-background text-foreground'>
+    <div class='w-full max-w-[70rem] px-4 sm:px-7 lg:px-10'>
+      <Header />
+      <div class="container mx-auto px-4 py-8">
+        <!-- Breadcrumbs navigation -->
+        <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+        
+        <h1 class="text-3xl font-bold mb-8">Posts tagged with #{tag}</h1>
+        
+        <div class="mb-8 glass p-6 rounded-lg">
+          <h2 class="text-xl font-semibold mb-4">All Tags</h2>
+          <TagCloud 
+            tags={allTags} 
+            showCount={true} 
+            counts={tagCounts}
+          />
+        </div>
+
+        {sortedPosts && sortedPosts.length > 0 && (
+          <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6">Blog Posts</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sortedPosts.map((post) => (
+                <PostCard post={post} type="blog" />
+              ))}
+            </div>
+          </section>
+        )}
+        
+        {sortedProjects && sortedProjects.length > 0 && (
+          <section>
+            <h2 class="text-2xl font-semibold mb-6">Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sortedProjects.map((project) => (
+                <PostCard post={project} type="project" />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {(!sortedPosts || sortedPosts.length === 0) && (!sortedProjects || sortedProjects.length === 0) && (
+          <p class="text-center text-gray-500">
+            No posts or projects found with this tag.
+          </p>
+        )}
+      </div>
+      <Footer />
+    </div>
+  </body>
+</html> 

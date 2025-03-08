@@ -157,7 +157,20 @@ export default defineConfig({
   ],
   rules: [],
   theme: {
-    colors: themeColors
+    colors: themeColors,
+    keyframes: {
+      'gradient-x': {
+        '0%': {
+          'background-position': '0% 50%'
+        },
+        '100%': {
+          'background-position': '100% 50%'
+        }
+      }
+    },
+    animation: {
+      'gradient-x': 'gradient-x 6s linear infinite'
+    }
   },
   // https://unocss.dev/guide/extracting#limitations
   safelist: [
@@ -166,6 +179,12 @@ export default defineConfig({
     'rounded-b-2xl',
     // Typography
     'text-base',
-    'prose'
+    'prose',
+    // Navigation
+    'peer-checked:flex',
+    'peer-checked:visible',
+    'peer-checked:opacity-100',
+    'group-hover:visible',
+    'group-hover:opacity-100'
   ]
 })

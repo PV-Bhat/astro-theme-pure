@@ -8,6 +8,7 @@ import 'katex/dist/katex.min.css'
 import { Comment, MediumZoom } from 'astro-pure/advanced'
 import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
 import PageLayout from '@/layouts/ContentLayout.astro'
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
 import { integ } from '@/site-config'
 
 interface Props {
@@ -38,9 +39,21 @@ const socialImage = heroImage
   ? typeof heroImage.src === 'string'
     ? heroImage.src
     : heroImage.src.src
-  : '/images/social-card.png'
+  : 'https://via.placeholder.com/1200x630' as string
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
 const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
+
+// Create breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "Blog",
+    href: "/blog"
+  },
+  {
+    label: title,
+    href: `/blog/${id}`
+  }
+];
 ---
 
 <PageLayout
@@ -50,6 +63,9 @@ const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-tex
 >
   {!!headings.length && <TOC {headings} slot='sidebar' />}
 
+  <!-- Breadcrumbs navigation -->
+  <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+  
   <Hero {data} {remarkPluginFrontmatter} slot='header' />
 
   <slot />

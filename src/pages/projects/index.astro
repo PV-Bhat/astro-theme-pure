@@ -4,6 +4,7 @@ import { Image } from 'astro:assets'
 import type { iconsType } from 'astro-pure/types'
 import { Button, Collapse, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
 import ProjectSection from '@/components/projects/ProjectSection.astro'
 import Sponsors from '@/components/projects/Sponsors.astro'
 import alipay from '@/assets/alipay-qrcode.jpg'
@@ -19,9 +20,22 @@ const headings = [
   { depth: 2, slug: 'gpg-signature', text: 'GPG Signature' },
   { depth: 2, slug: 'sponsorship', text: 'Sponsorship' }
 ]
+
+// Breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "Projects",
+    href: "/projects"
+  }
+];
 ---
 
 <PageLayout title='Projects' {headings} info={{ slug: '/projects', hideComment: true }}>
+  <!-- Breadcrumbs container placed at beginning and styled appropriately -->
+  <div class="mb-6">
+    <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+  </div>
+  
   <p>Github Activities:</p>
   <p>
     <Image

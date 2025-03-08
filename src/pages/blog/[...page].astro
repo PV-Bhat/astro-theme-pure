@@ -6,6 +6,7 @@ import { Paginator, PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, getUniqueTags, sortMDByDate } from 'astro-pure/server'
 import { Button, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
 import config from '@/site-config'
 
 export const prerender = true
@@ -27,6 +28,22 @@ interface Props {
 }
 
 const { page, uniqueTags, collectionsCount } = Astro.props
+
+// Breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "Blog",
+    href: "/blog"
+  }
+];
+
+// Add pagination to breadcrumbs if not on first page
+if (page.currentPage > 1) {
+  breadcrumbItems.push({
+    label: `Page ${page.currentPage}`,
+    href: page.url.current
+  });
+}
 
 const meta = {
   description: 'Some posts or archieves of my blog',
@@ -50,58 +67,63 @@ const paginationProps = {
 ---
 
 <PageLayout {meta}>
-  <Button title='Back' href='/' style='back' />
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 mt-6 text-3xl font-medium sm:mt-10'>Blog</h1>
-    </div>
-    {
-      page.data.length === 0 ? (
-        <p>No posts yet.</p>
-      ) : (
-        <div class='grid gap-y-16 sm:grid-cols-[3fr_1fr] sm:gap-x-8'>
-          <section aria-label='Blog posts list' class='animate' id='content'>
-            {/* header */}
-            <div class='mb-3 flex flex-col justify-between text-sm sm:mb-5 sm:flex-row'>
-              <span class='text-muted-foreground'>
-                Page {page.currentPage} - Showing {page.data.length} of {collectionsCount} posts
-              </span>
-              <a aria-label='View all blog by years' href='/archives' data-astro-prefetch>
-                View all posts by years →
-              </a>
-            </div>
-            {/* posts */}
-            <ul class='flex flex-col gap-y-4 text-start'>
-              {page.data.map((post) => (
-                <PostPreview {post} detailed />
-              ))}
-            </ul>
-            <Paginator {...paginationProps} />
-          </section>
+  <div class="max-w-4xl mx-auto">
+    <!-- Breadcrumbs navigation -->
+    <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+    
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Main content -->
+      <div class="flex-1">
+        <h1 class="text-3xl font-medium mb-6">Blog</h1>
+        {
+          page.data.length === 0 ? (
+            <p>No posts yet.</p>
+          ) : (
+            <div class='grid gap-y-16 sm:grid-cols-[3fr_1fr] sm:gap-x-8'>
+              <section aria-label='Blog posts list' class='animate' id='content'>
+                {/* header */}
+                <div class='mb-3 flex flex-col justify-between text-sm sm:mb-5 sm:flex-row'>
+                  <span class='text-muted-foreground'>
+                    Page {page.currentPage} - Showing {page.data.length} of {collectionsCount} posts
+                  </span>
+                  <a aria-label='View all blog by years' href='/archives' data-astro-prefetch>
+                    View all posts by years →
+                  </a>
+                </div>
+                {/* posts */}
+                <ul class='flex flex-col gap-y-4 text-start'>
+                  {page.data.map((post) => (
+                    <PostPreview {post} detailed />
+                  ))}
+                </ul>
+                <Paginator {...paginationProps} />
+              </section>
 
-          {/* sidebar */}
-          {!!uniqueTags.length && (
-            <aside class='animate' id='sidebar'>
-              <h2 class='mb-4 flex items-center text-lg font-semibold'>
-                <Icon name='tag-2' class='me-2' />
-                Tags
-              </h2>
-              <ul class='text-bgColor flex flex-wrap gap-2'>
-                {uniqueTags.map((tag) => (
-                  <li>
-                    <Button title={tag} href={`/tags/${tag}`} style='pill' />
-                  </li>
-                ))}
-              </ul>
-              <span class='mt-4 block sm:text-end'>
-                <a aria-label='View all blog categories' href='/tags' data-astro-prefetch>
-                  View all →
-                </a>
-              </span>
-            </aside>
-          )}
-        </div>
-      )
-    }
-  </main>
+              {/* sidebar */}
+              {!!uniqueTags.length && (
+                <aside class='animate' id='sidebar'>
+                  <h2 class='mb-4 flex items-center text-lg font-semibold'>
+                    <Icon name='tag-2' class='me-2' />
+                    Tags
+                  </h2>
+                  <ul class='text-bgColor flex flex-wrap gap-2'>
+                    {uniqueTags.map((tag) => (
+                      <li>
+                        <Button title={tag} href={`/tags/${tag}`} style='pill' />
+                      </li>
+                    ))}
+                  </ul>
+                  <span class='mt-4 block sm:text-end'>
+                    <a aria-label='View all blog categories' href='/tags' data-astro-prefetch>
+                      View all →
+                    </a>
+                  </span>
+                </aside>
+              )}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
 </PageLayout>

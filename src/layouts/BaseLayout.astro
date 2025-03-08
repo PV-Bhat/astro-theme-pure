@@ -1,57 +1,251 @@
 ---
-import { Footer, Header, ThemeProvider } from 'astro-pure/components/basic'
+import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
 import type { SiteMeta } from 'astro-pure/types'
 import BaseHead from '@/components/BaseHead.astro'
 import config from '@/site-config'
-
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseLayout /> component.
-import '@/assets/styles/app.css'
+import '../styles/animations.css'
+import '../styles/glass.css'
 
 interface Props {
-  meta: SiteMeta
-  highlightColor?: string
+	meta?: SiteMeta
+	highlightColor?: string
 }
 
 const {
-  meta: { articleDate, description = config.description, ogImage, title },
-  highlightColor
+	meta = { title: config.title, description: config.description },
+	highlightColor
 } = Astro.props
+
+// Safely extract properties with defaults
+const { 
+	articleDate = undefined, 
+	description = config.description, 
+	ogImage = undefined, 
+	title = config.title 
+} = meta
 ---
 
-<html lang={config.locale.lang}>
-  <head>
-    <BaseHead {articleDate} {description} {ogImage} {title} />
-    <ThemeProvider />
-  </head>
-
-  <body class='flex justify-center bg-background text-foreground'>
-    {
-      highlightColor && (
-        <div
-          id='highlight-gradient'
-          class='pointer-events-none absolute start-0 top-0 z-0 h-screen w-full opacity-25'
-          style={`background-image:linear-gradient(${highlightColor},transparent)`}
-        />
-      )
-    }
-    <div class='w-full max-w-[70rem] px-4 sm:px-7 lg:px-10'>
-      <Header />
-      <slot />
-      <Footer />
-    </div>
-
-    {/* Set highlight color */}
-    <style define:vars={{ highlightColor }}>
-      :global(.highlight) {
-        color: var(--highlightColor, hsl(var(--primary) / var(--un-text-opacity))) !important;
-      }
-      :global(.highlight-bg) {
-        background-color: var(
-          --highlightColor,
-          hsl(var(--primary) / var(--un-text-opacity))
-        ) !important;
-      }
-    </style>
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<BaseHead {articleDate} {description} {ogImage} {title} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-black text-gray-100 min-h-screen flex flex-col">
+		<!-- Dynamic background element -->
+		<div class="dynamic-bg"></div>
+		
+		<!-- Noise texture overlay -->
+		<div class="fixed inset-0 z-[-1] opacity-[0.03] pointer-events-none bg-[url(/noise.svg)]"></div>
+		
+		{
+			highlightColor && (
+				<div
+					id='highlight-gradient'
+					class='pointer-events-none fixed start-0 top-0 z-0 h-screen w-full opacity-25'
+					style={`background-image:linear-gradient(${highlightColor},transparent)`}
+				/>
+			)
+		}
+		<Header />
+		<main class="flex-grow container mx-auto px-4 pt-24 pb-8">
+			<slot />
+		</main>
+		<Footer />
+	</body>
 </html>
+
+<style is:global>
+	:root {
+		--accent: 52, 211, 153;
+		--accent-light: 20, 184, 166;
+		--accent-dark: 5, 150, 105;
+		--accent-gradient: linear-gradient(45deg, rgb(var(--accent)), rgb(var(--accent-light)) 30%, white 60%);
+	}
+
+	html {
+		font-family: 'Figtree', system-ui, sans-serif;
+		background: #000000;
+		scroll-behavior: smooth;
+		font-feature-settings: "rlig" 1, "calt" 1;
+		text-rendering: optimizeLegibility;
+	}
+
+	code {
+		font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+			Bitstream Vera Sans Mono, Courier New, monospace;
+	}
+
+	/* Glass effect for cards and containers */
+	.glass {
+		background: rgba(0, 0, 0, 0.7);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border: 1px solid rgba(52, 211, 153, 0.1);
+		border-radius: 0.75rem;
+	}
+
+	/* Interactive elements hover effect */
+	.hover-lift {
+		position: relative;
+		transition: all 0.3s ease;
+	}
+
+	.hover-lift:hover {
+		transform: translateY(-5px);
+	}
+
+	/* Glow effect */
+	.hover-glow {
+		transition: box-shadow 0.3s ease;
+	}
+
+	.hover-glow:hover {
+		box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
+	}
+
+	/* Selection color */
+	::selection {
+		background: rgba(52, 211, 153, 0.2);
+	}
+
+	/* Smooth transitions */
+	* {
+		transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+	}
+
+	/* Set highlight color */
+	:global(.highlight) {
+		color: var(--highlightColor, rgb(52, 211, 153)) !important;
+	}
+	:global(.highlight-bg) {
+		background-color: var(
+			--highlightColor,
+			rgb(52, 211, 153)
+		) !important;
+	}
+	
+	/* Spotlight animation */
+	@keyframes spotlight {
+		0% {
+			opacity: 0;
+			transform: translate(-50%, -50%) scale(0.9);
+		}
+		100% {
+			opacity: 0.8;
+			transform: translate(-50%, -50%) scale(1);
+		}
+	}
+	
+	.animate-spotlight {
+		animation: spotlight 1.2s ease forwards;
+	}
+	
+	/* Make the scrollbar match the theme */
+	::-webkit-scrollbar {
+		width: 10px;
+	}
+	
+	::-webkit-scrollbar-track {
+		background: rgba(0, 0, 0, 0.7);
+	}
+	
+	::-webkit-scrollbar-thumb {
+		background: rgba(52, 211, 153, 0.1);
+		border-radius: 5px;
+	}
+	
+	::-webkit-scrollbar-thumb:hover {
+		background: rgba(52, 211, 153, 0.2);
+	}
+	
+	/* Dynamic background styling */
+	.dynamic-bg {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1000;
+		background: linear-gradient(
+			135deg,
+			rgba(18, 18, 18, 1) 0%,
+			rgba(25, 25, 25, 1) 25%,
+			rgba(20, 20, 20, 1) 50%, 
+			rgba(28, 28, 28, 1) 75%,
+			rgba(18, 18, 18, 1) 100%
+		);
+		background-size: 400% 400%;
+		animation: subtleGradientShift 15s ease infinite;
+	}
+	
+	@keyframes subtleGradientShift {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+</style>
+
+<script>
+// Create particles for dynamic background
+document.addEventListener('DOMContentLoaded', () => {
+  const dynamicBg = document.querySelector('.dynamic-bg');
+  if (!dynamicBg) return;
+  
+  // Add subtle floating particles
+  const particleCount = 30;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.style.position = 'absolute';
+    particle.style.width = `${Math.random() * 2 + 1}px`;
+    particle.style.height = particle.style.width;
+    particle.style.backgroundColor = 'rgba(150, 150, 150, 0.2)';
+    particle.style.borderRadius = '50%';
+    particle.style.pointerEvents = 'none';
+    
+    // Random position
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    
+    // Random animation
+    const duration = Math.random() * 20 + 10;
+    const delay = Math.random() * 10;
+    
+    particle.style.animation = `floatParticle ${duration}s ease-in-out ${delay}s infinite`;
+    
+    dynamicBg.appendChild(particle);
+  }
+});
+
+// Define particle animation
+if (!document.querySelector('style#particleAnimation')) {
+  const style = document.createElement('style');
+  style.id = 'particleAnimation';
+  style.textContent = `
+    @keyframes floatParticle {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(-100px) translateX(20px);
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+}
+</script>

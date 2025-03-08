@@ -1,0 +1,74 @@
+---
+interface Props {
+  as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span' | 'p';
+  gradient?: 'blue-purple' | 'blue-cyan' | 'purple-pink' | 'multi-color' | 'custom';
+  from?: string;
+  via?: string;
+  to?: string;
+  class?: string;
+  animated?: boolean;
+}
+
+const {
+  as: Element = 'span',
+  gradient = 'blue-purple',
+  from = '#3b82f6',
+  via = '',
+  to = '#8b5cf6',
+  class: className = '',
+  animated = false,
+} = Astro.props;
+
+// Predefined gradients
+const gradients: {[key in 'blue-purple' | 'blue-cyan' | 'purple-pink' | 'multi-color' | 'custom']: string} = {
+  'blue-purple': 'from-blue-400 to-indigo-600',
+  'blue-cyan': 'from-blue-500 to-cyan-400',
+  'purple-pink': 'from-purple-500 to-pink-500',
+  'multi-color': 'from-blue-400 via-teal-300 to-indigo-500',
+  'custom': '' // We'll apply custom gradients via inline style
+};
+
+const gradientClasses = gradients[gradient as keyof typeof gradients];
+const useCustomGradient = gradient === 'custom';
+
+// For custom gradients, generate the CSS gradient directly
+const customGradientStyle = useCustomGradient 
+  ? via 
+    ? `background-image: linear-gradient(to right, ${from}, ${via}, ${to});` 
+    : `background-image: linear-gradient(to right, ${from}, ${to});`
+  : '';
+---
+
+<Element 
+  class={`gradient-text inline-block text-transparent bg-clip-text ${animated ? 'animate-gradientFlow' : ''} ${!useCustomGradient ? 'bg-gradient-to-r ' + gradientClasses : ''} ${className}`}
+  style={useCustomGradient ? customGradientStyle : ''}
+>
+  <slot />
+</Element>
+
+<style>
+  .gradient-text {
+    background-size: 200% 200%;
+  }
+  
+  @keyframes gradientFlow {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .animate-gradientFlow {
+    animation: gradientFlow 6s cubic-bezier(0.19, 1, 0.22, 1) infinite;
+  }
+  
+  /* Add a subtle text shadow for extra polish */
+  .gradient-text {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+</style> 

@@ -10,14 +10,14 @@ const { class: className, title, ...props } = Astro.props
 
 <collapse-component class='group/expand'>
   <div
-    class={cn('rounded-xl border px-3 my-4 sm:px-4 group-[.expanded]/expand:bg-muted', className)}
+    class={cn('rounded-xl border-2 px-4 my-6 sm:px-6 group-[.expanded]/expand:bg-muted', className)}
     {...props}
   >
     <slot name='before' />
     <div
-      class='group/highlight expand-title sticky top-0 z-20 flex cursor-pointer items-center justify-between py-1.5 group-[.expanded]/expand:bg-muted sm:py-2'
+      class='group/highlight expand-title sticky top-0 z-20 flex cursor-pointer items-center justify-between py-4 group-[.expanded]/expand:bg-muted sm:py-4'
     >
-      <p class='m-0 transition-colors group-hover/highlight:text-primary'>{title}</p>
+      <p class='m-0 text-lg font-medium transition-colors group-hover/highlight:text-primary'>{title}</p>
       <div class='expand-button'>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -74,6 +74,7 @@ const { class: className, title, ...props } = Astro.props
 <style>
   .expand-conetent {
     grid-template-rows: 0fr;
+    padding: 0.5rem 0;
   }
   .expanded .expand-conetent {
     grid-template-rows: 1fr;

@@ -1,0 +1,97 @@
+---
+interface Props {
+  as?: string;
+  href?: string;
+  title?: string;
+  class?: string;
+  style?: 'default' | 'outline' | 'minimal';
+  direction?: 'ahead' | 'back';
+}
+
+const { 
+  as: Element = 'a', 
+  href, 
+  title, 
+  class: className = '', 
+  style = 'default',
+  direction = 'ahead'
+} = Astro.props;
+
+// Build the CSS classes based on the style prop
+const baseClasses = "group inline-flex items-center gap-x-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:scale-[1.02]";
+
+// Using a function instead of an object lookup to avoid TypeScript indexing issues
+function getStyleClasses(styleName: string): string {
+  switch(styleName) {
+    case 'outline':
+      return "bg-transparent text-white border border-white/20 hover:bg-white/10 hover:border-white/40 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]";
+    case 'minimal':
+      return "bg-transparent text-gray-200 hover:text-white hover:translate-x-0.5";
+    case 'default':
+    default:
+      return "bg-gradient-to-r from-[#0a0f1c]/70 to-[#141e33]/70 text-white border border-white/10 hover:from-[#0a0f1c]/90 hover:to-[#141e33]/90 hover:border-white/30 shadow-sm hover:shadow-lg hover:shadow-white/5";
+  }
+}
+
+const styleClass = getStyleClasses(style);
+---
+
+<Element 
+  href={href}
+  class={`${baseClasses} ${styleClass} ${className}`}
+>
+  {direction === 'back' && (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <line
+        x1="19"
+        y1="12"
+        x2="5"
+        y2="12"
+        class="transform translate-x-3 scale-x-0 transition-all duration-200 ease-out opacity-0 group-hover:translate-x-0 group-hover:scale-x-100 group-hover:opacity-100"
+      />
+      <polyline
+        points="12 19 5 12 12 5"
+        class="transform translate-x-1 transition-all duration-200 ease-out group-hover:translate-x-0"
+      />
+    </svg>
+  )}
+  
+  <span>{title}</span>
+  <slot />
+  
+  {direction === 'ahead' && (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <line
+        x1="5"
+        y1="12"
+        x2="19"
+        y2="12"
+        class="transform translate-x-3 scale-x-0 transition-all duration-200 ease-out opacity-0 group-hover:translate-x-0 group-hover:scale-x-100 group-hover:opacity-100"
+      />
+      <polyline
+        points="12 5 19 12 12 19"
+        class="transform translate-x-0 transition-all duration-200 ease-out group-hover:translate-x-1"
+      />
+    </svg>
+  )}
+</Element> 

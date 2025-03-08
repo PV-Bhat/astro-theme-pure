@@ -1,0 +1,104 @@
+---
+interface Feature {
+  name: string;
+  included: boolean;
+}
+
+interface Props {
+  title: string;
+  price: string;
+  period?: string;
+  description: string;
+  features: Feature[];
+  buttonText: string;
+  buttonHref: string;
+  highlighted?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  price,
+  period = "/month",
+  description,
+  features,
+  buttonText,
+  buttonHref,
+  highlighted = false,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class={`pricing-card relative overflow-hidden rounded-2xl transition-all duration-300 ${highlighted ? 'bg-gradient-to-br from-[#0a0f1c]/80 to-[#050505]/90 border border-[#34D399]/20' : 'bg-[#0a0f1c]/70 border border-white/10'} ${className} hover:-translate-y-1`}>
+  {highlighted && (
+    <div class="absolute top-0 right-0 overflow-hidden">
+      <div class="absolute -top-1 -right-1 w-6 h-6 transform rotate-45 bg-[#34D399]"></div>
+    </div>
+  )}
+  
+  <div class="absolute inset-0 -z-10 bg-[#34D399]/5 blur-xl"></div>
+  
+  <div class="p-6 md:p-8">
+    <!-- Header -->
+    <div class="text-center">
+      <h3 class="text-xl font-semibold text-white mb-2">{title}</h3>
+      <div class="mb-4">
+        <span class="text-3xl font-bold text-white">{price}</span>
+        {period && <span class="text-gray-400">{period}</span>}
+      </div>
+      <p class="text-gray-400 text-sm mb-6">{description}</p>
+    </div>
+    
+    <!-- Features list -->
+    <ul class="space-y-3 mb-8">
+      {features.map(feature => (
+        <li class="flex items-center">
+          <div class={`mt-1 flex-shrink-0 ${feature.included ? 'text-[#34D399]' : 'text-gray-600'}`}>
+            {feature.included ? (
+              <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+            ) : (
+              <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            )}
+          </div>
+          <span class={`ml-3 text-sm ${feature.included ? 'text-gray-300' : 'text-gray-500'}`}>
+            {feature.name}
+          </span>
+        </li>
+      ))}
+    </ul>
+    
+    <!-- CTA button -->
+    <div class="mt-auto">
+      <a
+        href={buttonHref}
+        class={`w-full py-3 px-6 rounded-lg text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 ${
+          highlighted 
+            ? 'bg-gradient-to-r from-[#34D399] to-[#10B981] text-black hover:shadow-lg hover:shadow-[#34D399]/25'
+            : 'bg-white/10 text-white hover:bg-white/20'
+        }`}
+      >
+        {buttonText}
+      </a>
+    </div>
+  </div>
+  
+  {highlighted && (
+    <div class="absolute top-0 right-0 w-20 h-20 -mr-10 -mt-10 rotate-45 bg-gradient-to-r from-[#34D399] to-[#10B981] opacity-50 blur-3xl"></div>
+  )}
+</div>
+
+<style>
+  .pricing-card {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+  }
+  
+  .pricing-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+</style> 

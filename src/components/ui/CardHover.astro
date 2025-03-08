@@ -1,0 +1,66 @@
+---
+interface Props {
+  class?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  hoverIntensity?: 'subtle' | 'medium' | 'intense';
+}
+
+const { 
+  class: className = "", 
+  primaryColor = "100, 158, 185",
+  secondaryColor = "120, 140, 230",
+  hoverIntensity = 'medium' 
+} = Astro.props;
+
+// Define opacity values based on intensity
+const opacityMap = {
+  subtle: { base: "0.05", hover: "0.15" },
+  medium: { base: "0.1", hover: "0.3" },
+  intense: { base: "0.15", hover: "0.4" }
+};
+
+const opacity = opacityMap[hoverIntensity];
+---
+
+<div class={`card-hover-container relative rounded-xl group overflow-hidden ${className}`}>
+  <!-- Base card with glass effect -->
+  <div class="card-content relative z-10 p-6 h-full border border-white/10 rounded-xl bg-[#0a0f1c]/70 backdrop-filter backdrop-blur-md transition-all duration-300 group-hover:border-white/20">
+    <slot />
+  </div>
+  
+  <!-- Background gradient effect -->
+  <div 
+    class="absolute inset-0 z-0 bg-gradient-to-br opacity-0 transition-all duration-500 ease-out rounded-xl group-hover:opacity-100"
+    style={`from-rgba(${primaryColor},${opacity.hover}) via-transparent to-rgba(${secondaryColor},${opacity.hover})`}
+  ></div>
+  
+  <!-- Edge glow effect -->
+  <div class="absolute -inset-px z-0 bg-gradient-to-br from-transparent via-transparent to-transparent rounded-xl opacity-0 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:from-white/5 group-hover:to-white/10"></div>
+  
+  <!-- Corner dot accent -->
+  <div 
+    class="absolute top-0 right-0 w-16 h-16 -translate-y-1/2 translate-x-1/2 rounded-full blur-2xl opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-20"
+    style={`background: rgba(${primaryColor}, 1)`}
+  ></div>
+</div>
+
+<style>
+  .card-hover-container {
+    transition: all 0.3s ease;
+  }
+  
+  .card-hover-container:hover {
+    transform: translateY(-3px);
+  }
+  
+  /* Subtle text shadow for content inside cards */
+  .card-content :where(h1, h2, h3, h4, h5, h6) {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .card-hover-container:hover .card-content :where(h1, h2, h3, h4, h5, h6) {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+</style> 

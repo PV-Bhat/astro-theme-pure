@@ -1,0 +1,254 @@
+---
+import '../../styles/glass.css';
+
+interface Props {
+  href: string;
+  title: string;
+  logo: string;
+  class?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+}
+
+const { 
+  href, 
+  title, 
+  logo, 
+  class: className,
+  primaryColor = "52, 211, 153",
+  secondaryColor = "16, 185, 129"
+} = Astro.props;
+
+// Define color interface
+interface ColorSet {
+  primary: string;
+  secondary: string;
+}
+
+// Define the accent color variation based on the href
+const getAccentColor = (path: string): ColorSet => {
+  const colors: Record<string, ColorSet> = {
+    "/about": { primary: "169, 169, 169", secondary: "120, 120, 120" }, // Silver
+    "/blog": { primary: "52, 211, 153", secondary: "16, 185, 129" }, // Green
+    "/projects": { primary: "56, 189, 248", secondary: "14, 165, 233" }, // Jean blue
+    "/docs": { primary: "139, 92, 246", secondary: "124, 58, 237" }, // Purple
+    "/archives": { primary: "249, 115, 22", secondary: "234, 88, 12" }, // Orange
+    "/links": { primary: "236, 72, 153", secondary: "219, 39, 119" }, // Pink
+  };
+  
+  return colors[path] || { primary: primaryColor, secondary: secondaryColor };
+};
+
+const accentColor = getAccentColor(href);
+---
+
+<style define:vars={{ 
+  primaryColor: accentColor.primary, 
+  secondaryColor: accentColor.secondary 
+}}>
+  .card-glass {
+    background: rgba(10, 10, 10, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--primaryColor), 0.1);
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1); /* Even faster transition */
+  }
+  
+  .card-glass:hover {
+    background: rgba(25, 25, 25, 0.7);
+    border: 1px solid rgba(var(--primaryColor), 0.4);
+  }
+  
+  /* Ultra-sleek rise and glint effect */
+  .nav-card {
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1); /* Even faster transition */
+    position: relative;
+    overflow: hidden;
+    will-change: transform, box-shadow; /* Optimize for animations */
+  }
+  
+  .group:hover .nav-card {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(var(--primaryColor), 0.15);
+  }
+
+  /* Ultra-fast glint effect */
+  .nav-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(
+      90deg, 
+      transparent, 
+      rgba(var(--primaryColor), 0.15),
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    z-index: 2;
+    transition: none; /* Remove transition for instant start */
+    transform: skewX(-25deg); /* Add skew for slicker look */
+    opacity: 0;
+  }
+  
+  .group:hover .nav-card::before {
+    animation: fast-glint 0.6s cubic-bezier(0.19, 1, 0.22, 1); /* Faster glint */
+  }
+  
+  @keyframes fast-glint {
+    0% {
+      left: -100%;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      left: 200%;
+      opacity: 0;
+    }
+  }
+
+  /* Icon and text effects - snappier */
+  .nav-icon {
+    filter: brightness(0) invert(0.75);
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+    max-width: 85%;
+    max-height: 85%;
+    transform: scale(0.95);
+    will-change: transform, filter; /* Optimize for animations */
+  }
+  
+  .group:hover .nav-icon {
+    filter: brightness(0) invert(0.95);
+    transform: scale(1);
+  }
+  
+  .nav-text {
+    color: #c3c3c3;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+    font-weight: 500;
+    will-change: color, letter-spacing; /* Optimize for animations */
+  }
+  
+  .group:hover .nav-text {
+    color: rgb(var(--primaryColor));
+    letter-spacing: 0.02em;
+  }
+  
+  /* Enhanced border effect - more sleek */
+  .border-effect {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    top: 0;
+    left: 0;
+    border: 1px solid transparent;
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 1;
+    opacity: 0;
+    overflow: hidden;
+  }
+  
+  .border-effect::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(120deg, 
+      transparent, 
+      transparent,
+      transparent,
+      rgba(var(--primaryColor), 0.03), 
+      rgba(var(--primaryColor), 0.05)
+    );
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  
+  .group:hover .border-effect {
+    border-color: rgba(var(--primaryColor), 0.5);
+    box-shadow: inset 0 0 12px rgba(var(--primaryColor), 0.08);
+    opacity: 1;
+  }
+  
+  .group:hover .border-effect::after {
+    opacity: 1;
+  }
+  
+  /* Pulse indicator for featured items with improved animation */
+  .featured::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: rgb(var(--primaryColor));
+    z-index: 10;
+    opacity: 0.8;
+    animation: pulse-indicator 1.5s infinite cubic-bezier(0.19, 1, 0.22, 1); /* Faster pulse */
+  }
+  
+  @keyframes pulse-indicator {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 0.4;
+    }
+  }
+  
+  /* Shadow effect to enhance depth without being distracting */
+  .card-shadow {
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    right: 0;
+    height: 15px;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 80%);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scaleX(0.9);
+    transition: opacity 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: -1;
+    filter: blur(5px);
+  }
+  
+  .group:hover .card-shadow {
+    opacity: 0.5;
+  }
+</style>
+
+<li
+  class={`list-none relative rounded-xl aspect-square w-full min-w-20 md:min-w-22 md:max-w-26 group ${className} ${href === "/projects" || href === "/about" ? "featured" : ""}`}
+>
+  <a
+    href={href}
+    class="flex flex-col items-center justify-center w-full h-full p-3 card-glass rounded-xl nav-card"
+  >
+    <div class="border-effect"></div>
+    <div
+      class="w-full h-full absolute inset-0 bg-[url(/noise.svg)] opacity-0 group-hover:opacity-20 transition-opacity duration-200 rounded-xl"
+    >
+    </div>
+    <div class="w-[55%] aspect-square flex items-center justify-center z-10 mb-2">
+      <img
+        src={logo}
+        alt={title}
+        class="nav-icon object-contain"
+      />
+    </div>
+    <span class="text-xs z-10 font-medium nav-text">
+      {title}
+    </span>
+    <div class="card-shadow"></div>
+  </a>
+</li> 

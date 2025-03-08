@@ -9,9 +9,9 @@ type Props = SiteMeta
 
 const { articleDate, description, ogImage, title } = Astro.props
 
-const siteTitle = `${title} ${config.titleDelimiter} ${config.title}`
+const siteTitle = title === config.title ? title : `${title} ${config.titleDelimiter} ${config.title}`
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
-const socialImageURL = new URL(ogImage ? ogImage : '/images/social-card.png', Astro.url).href
+const socialImageURL = new URL(ogImage ? ogImage : 'images/social-card.png', Astro.site).href
 ---
 
 <meta charset='utf-8' />
@@ -44,7 +44,7 @@ const socialImageURL = new URL(ogImage ? ogImage : '/images/social-card.png', As
 <meta content={config.author} name='author' />
 
 {/* Theme Color */}
-<meta content='' name='theme-color' />
+<meta content='#0a0f1c' name='theme-color' />
 
 {/* Open Graph / Facebook */}
 <meta content={articleDate ? 'article' : 'website'} property='og:type' />
@@ -105,9 +105,44 @@ const socialImageURL = new URL(ogImage ? ogImage : '/images/social-card.png', As
   /* User script*/
   prod && (
     <script>
-      console.log( '%c Astro Theme Pure %c https://github.com/cworld1/astro-theme-pure/',
-      'color:#fff;background:linear-gradient(90deg,#448bff,#44e9ff);padding:5px 0;',
-      'color:#000;background:linear-gradient(90deg,#44e9ff,#ffffff);padding:5px 10px 5px 0px;' )
+      console.log( '%c Pruthvi Bhat %c https://github.com/cworld1/astro-theme-pure/',
+      'color:#fff;background:linear-gradient(90deg,#34D399,#10B981);padding:5px 0;',
+      'color:#000;background:linear-gradient(90deg,#10B981,#ffffff);padding:5px 10px 5px 0px;' )
     </script>
   )
 }
+
+<style is:global>
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    font-family: 'Figtree', system-ui, sans-serif;
+    background: #0a0f1c;
+    color: #fff;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Glass effect */
+  .glass {
+    background: rgba(10, 15, 28, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(255, 255, 255, 0.1);
+  }
+</style>

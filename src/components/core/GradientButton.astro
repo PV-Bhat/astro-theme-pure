@@ -1,0 +1,177 @@
+---
+import '../../styles/glass.css';
+
+interface Props {
+  href: string;
+  text?: string;
+  title?: string; // Keep for backward compatibility
+  class?: string;
+  primaryColor?: string;
+  secondaryColor?: string;
+  target?: string;
+  showArrow?: boolean;
+  arrowDirection?: 'right' | 'left';
+}
+
+const { 
+  href, 
+  text,
+  title, 
+  class: className = "", 
+  primaryColor = "52, 211, 153",
+  secondaryColor = "34, 197, 94",
+  target = "_self",
+  showArrow = false,
+  arrowDirection = 'right'
+} = Astro.props;
+
+// Use text prop if provided, otherwise fall back to title
+const buttonText = text || title || '';
+---
+
+<style>
+  .glass-button {
+    background: rgba(5, 5, 5, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .glass-button:hover {
+    background: rgba(10, 10, 15, 0.8);
+    border-color: rgba(52, 211, 153, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .card-gradient {
+    background-size: 200% 200%;
+    background-position: bottom left;
+    transition: background-position 0.3s ease;
+  }
+  
+  .group:hover .card-gradient {
+    background-position: top right;
+  }
+  
+  /* Arrow transitions */
+  .arrow-line-right {
+    transform: translateX(-4px) scaleX(0);
+    transform-origin: right;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .group:hover .arrow-line-right {
+    transform: translateX(-1px) scaleX(1);
+  }
+  
+  .arrow-points-right {
+    transform: translateX(0);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .group:hover .arrow-points-right {
+    transform: translateX(1px);
+  }
+  
+  .arrow-line-left {
+    transform: translateX(3px) scaleX(0);
+    transform-origin: left;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .group:hover .arrow-line-left {
+    transform: translateX(0) scaleX(1);
+  }
+  
+  .arrow-points-left {
+    transform: translateX(1px);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .group:hover .arrow-points-left {
+    transform: translateX(0);
+  }
+  
+  /* Glint effect */
+  .glint-effect {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    z-index: 0;
+  }
+  
+  .glint-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.1), 
+      transparent
+    );
+    z-index: 1;
+    transition: left 0.7s ease;
+  }
+  
+  .group:hover .glint-effect::before {
+    left: 100%;
+  }
+</style>
+
+<div class={`relative group ${className}`}>
+  <a
+    href={href}
+    target={target}
+    class="flex items-center justify-center px-4 py-2 rounded-full glass-button relative z-10"
+  >
+    <div class="glint-effect"></div>
+    <div
+      class="w-full h-full absolute inset-0 bg-[url(/noise.svg)] opacity-0 group-hover:opacity-30 transition-opacity duration-300 rounded-full"
+    >
+    </div>
+    <div class="flex items-center gap-2 relative z-10">
+      {arrowDirection === 'left' && showArrow && (
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="16" 
+          height="16" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          stroke-width="2.5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          class="text-[#34D399]"
+        >
+          <line x1="19" y1="12" x2="5" y2="12" class="arrow-line-left" />
+          <polyline points="12 19 5 12 12 5" class="arrow-points-left" />
+        </svg>
+      )}
+      <span class="text-white font-medium relative z-10">{buttonText}</span>
+      {arrowDirection === 'right' && showArrow && (
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          width="16" 
+          height="16" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          stroke="currentColor" 
+          stroke-width="2.5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          class="text-[#34D399]"
+        >
+          <line x1="5" y1="12" x2="19" y2="12" class="arrow-line-right" />
+          <polyline points="12 5 19 12 12 19" class="arrow-points-right" />
+        </svg>
+      )}
+    </div>
+  </a>
+</div> 

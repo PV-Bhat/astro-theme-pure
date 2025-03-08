@@ -1,0 +1,360 @@
+---
+// Navigation.astro
+import '../../styles/glass.css';
+import GradientButton from './GradientButton.astro';
+import config from '@/site-config';
+---
+
+<navigation-component class="fixed top-0 left-1/2 -translate-x-1/2 w-[95%] max-w-screen-xl z-50 group">
+  <header class="glass rounded-full mt-4 transition-all duration-300 group-[.not-top]:shadow-glow">
+    <nav class="px-8 py-3.5 transition-all duration-300 group-[.not-top]:py-2.5">
+      <div class="flex items-center justify-between">
+        <!-- Logo -->
+        <a href="/" class="flex items-center gap-2 transition-all duration-300 hover-lift">
+          <div class="text-xl font-bold text-white">
+            {config.title}
+          </div>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:flex lg:items-center lg:gap-12 transition-all duration-300 group-[.not-top]:gap-8">
+          <!-- All Pages Dropdown -->
+          <div class="relative group/dropdown">
+            <button class="flex items-center gap-1 text-gray-200 hover:text-white transition-colors nav-link-oval">
+              All Pages
+              <svg 
+                class="h-4 w-4 transition-transform group-hover/dropdown:rotate-180" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+              <span class="hover-oval"></span>
+            </button>
+
+            <!-- Mega Menu Dropdown -->
+            <div class="invisible opacity-0 group-hover/dropdown:visible group-hover/dropdown:opacity-100 absolute top-full left-1/2 -translate-x-1/2 w-[90vw] max-w-4xl mt-3 transition-all duration-300">
+              <div class="relative">
+                <!-- Backdrop and overlay -->
+                <div class="absolute inset-0 rounded-2xl glass border border-white/10"></div>
+                
+                <!-- Content -->
+                <div class="relative grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 p-6 md:p-8 text-gray-200">
+                  <!-- Main Pages -->
+                  <div>
+                    <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">MAIN</h3>
+                    <ul class="space-y-3">
+                      <li>
+                        <a href="/about" class="block hover:text-white transition-colors nav-link-oval">
+                          About
+                          <span class="hover-oval"></span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="/blog" class="block hover:text-white transition-colors nav-link-oval">
+                          Blog
+                          <span class="hover-oval"></span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="/projects" class="block hover:text-white transition-colors nav-link-oval">
+                          Projects
+                          <span class="hover-oval"></span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="/links" class="block hover:text-white transition-colors nav-link-oval">
+                          Links
+                          <span class="hover-oval"></span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <!-- Resources -->
+                  <div>
+                    <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">RESOURCES</h3>
+                    <ul class="space-y-3">
+                      <li>
+                        <a href="/docs" class="block hover:text-white transition-colors nav-link-oval">
+                          Documentation
+                          <span class="hover-oval"></span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="/archives" class="block hover:text-white transition-colors nav-link-oval">
+                          Archives
+                          <span class="hover-oval"></span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <!-- Featured Section -->
+                  <div class="md:col-span-2 relative">
+                    <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">FEATURED</h3>
+                    
+                    <div class="bg-black border border-[#34D399]/20 rounded-xl p-5">
+                      <h4 class="font-medium text-[#34D399] mb-1">Featured Projects</h4>
+                      <p class="text-sm text-gray-300 mb-3">Explore my latest projects and experiments</p>
+                      
+                      <a href="/projects/featured" class="inline-flex items-center text-[#34D399] hover:text-white transition-colors nav-link-oval">
+                        <span>View featured projects</span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                        <span class="hover-oval"></span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Navigation Links -->
+          <a href="/about" class="text-gray-200 hover:text-white transition-colors nav-link-oval">
+            <span>About</span>
+            <span class="hover-oval"></span>
+          </a>
+          <a href="/blog" class="text-gray-200 hover:text-white transition-colors nav-link-oval">
+            <span>Blog</span>
+            <span class="hover-oval"></span>
+          </a>
+          <a href="/projects" class="text-gray-200 hover:text-white transition-colors nav-link-oval">
+            <span>Projects</span>
+            <span class="hover-oval"></span>
+          </a>
+          <a href="/docs" class="text-gray-200 hover:text-white transition-colors nav-link-oval">
+            <span>Docs</span>
+            <span class="hover-oval"></span>
+          </a>
+          
+          <!-- Contact Button -->
+          <div class="relative group/contact">
+            <button class="text-gray-200 hover:text-white transition-colors nav-link-oval flex items-center gap-1">
+              <span>Contact</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+              </svg>
+              <span class="hover-oval"></span>
+            </button>
+            
+            <!-- Contact Dropdown -->
+            <div class="invisible opacity-0 group-hover/contact:visible group-hover/contact:opacity-100 absolute top-full right-0 mt-3 w-64 transition-all duration-300">
+              <div class="relative">
+                <!-- Backdrop and overlay -->
+                <div class="absolute inset-0 rounded-xl glass border border-white/10"></div>
+                
+                <!-- Content -->
+                <div class="relative p-5 text-gray-200">
+                  <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">CONTACT</h3>
+                  <ul class="space-y-3">
+                    <li>
+                      <a href="mailto:contact@example.com" class="flex items-center hover:text-white transition-colors nav-link-oval">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span>Email</span>
+                        <span class="hover-oval"></span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://linkedin.com/in/example" target="_blank" class="flex items-center hover:text-white transition-colors nav-link-oval">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z"></path>
+                        </svg>
+                        <span>LinkedIn</span>
+                        <span class="hover-oval"></span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://github.com/example" target="_blank" class="flex items-center hover:text-white transition-colors nav-link-oval">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                          <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>GitHub</span>
+                        <span class="hover-oval"></span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mobile Menu Toggle -->
+        <button class="lg:hidden text-white focus:outline-none" id="mobile-menu-toggle">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- Mobile Menu -->
+  <div class="lg:hidden invisible opacity-0 fixed inset-0 glass z-40 transition-all duration-300" id="mobile-menu">
+    <div class="h-full flex flex-col p-8">
+      <div class="flex justify-between items-center mb-8">
+        <a href="/" class="text-xl font-bold text-white">
+          {config.title}
+        </a>
+        <button class="text-white focus:outline-none" id="mobile-menu-close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <nav class="flex-1 flex flex-col justify-center space-y-8 text-center">
+        <a href="/about" class="text-2xl text-white nav-link-oval inline-block">
+          <span>About</span>
+          <span class="hover-oval"></span>
+        </a>
+        <a href="/blog" class="text-2xl text-white nav-link-oval inline-block">
+          <span>Blog</span>
+          <span class="hover-oval"></span>
+        </a>
+        <a href="/projects" class="text-2xl text-white nav-link-oval inline-block">
+          <span>Projects</span>
+          <span class="hover-oval"></span>
+        </a>
+        <a href="/docs" class="text-2xl text-white nav-link-oval inline-block">
+          <span>Docs</span>
+          <span class="hover-oval"></span>
+        </a>
+        <a href="/archives" class="text-2xl text-white nav-link-oval inline-block">
+          <span>Archives</span>
+          <span class="hover-oval"></span>
+        </a>
+        <a href="/links" class="text-2xl text-white nav-link-oval inline-block">
+          <span>Links</span>
+          <span class="hover-oval"></span>
+        </a>
+      </nav>
+      
+      <div class="mt-auto pt-8">
+        <GradientButton 
+          href="mailto:contact@example.com"
+          text="Contact Me"
+          primaryColor="52, 211, 153"
+          secondaryColor="5, 150, 105"
+          showArrow={true}
+          class="w-full"
+        />
+      </div>
+    </div>
+  </div>
+</navigation-component>
+
+<style>
+  /* Oval hover effect */
+  .nav-link-oval {
+    position: relative;
+    padding: 0.5rem 0.75rem;
+    border-radius: 9999px;
+  }
+  
+  .hover-oval {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-link-oval:hover .hover-oval {
+    border-color: rgba(52, 211, 153, 0.5);
+  }
+  
+  /* Hover underline animation */
+  .hover-lift {
+    transition: transform 0.3s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 5px 20px -5px rgba(0, 0, 0, 0.3);
+  }
+</style>
+
+<script>
+  class NavigationComponent extends HTMLElement {
+    constructor() {
+      super();
+      
+      // Variables
+      this.header = this.querySelector('header');
+      this.mobileMenuToggle = this.querySelector('#mobile-menu-toggle');
+      this.mobileMenuClose = this.querySelector('#mobile-menu-close');
+      this.mobileMenu = this.querySelector('#mobile-menu');
+      
+      // Initialize
+      this.init();
+    }
+    
+    init() {
+      // Scroll event for header
+      window.addEventListener('scroll', this.handleScroll.bind(this));
+      this.handleScroll(); // Initial check
+      
+      // Mobile menu events
+      if (this.mobileMenuToggle && this.mobileMenuClose && this.mobileMenu) {
+        this.mobileMenuToggle.addEventListener('click', this.openMobileMenu.bind(this));
+        this.mobileMenuClose.addEventListener('click', this.closeMobileMenu.bind(this));
+      }
+      
+      // Ensure each dropdown behaves independently
+      const dropdowns = this.querySelectorAll('.group/dropdown, .group/contact');
+      dropdowns.forEach(dropdown => {
+        const button = dropdown.querySelector('button');
+        const menu = dropdown.querySelector('div[class*="invisible"]');
+        
+        if (button && menu) {
+          button.addEventListener('mouseenter', () => {
+            menu.classList.add('visible', 'opacity-100');
+            menu.classList.remove('invisible', 'opacity-0');
+          });
+          
+          dropdown.addEventListener('mouseleave', () => {
+            menu.classList.remove('visible', 'opacity-100');
+            menu.classList.add('invisible', 'opacity-0');
+          });
+        }
+      });
+    }
+    
+    handleScroll() {
+      if (window.scrollY > 20) {
+        this.classList.add('not-top');
+      } else {
+        this.classList.remove('not-top');
+      }
+    }
+    
+    openMobileMenu() {
+      document.body.style.overflow = 'hidden';
+      this.mobileMenu.classList.remove('invisible', 'opacity-0');
+      this.mobileMenu.classList.add('visible', 'opacity-100');
+    }
+    
+    closeMobileMenu() {
+      document.body.style.overflow = '';
+      this.mobileMenu.classList.remove('visible', 'opacity-100');
+      this.mobileMenu.classList.add('invisible', 'opacity-0');
+    }
+  }
+  
+  customElements.define('navigation-component', NavigationComponent);
+</script>

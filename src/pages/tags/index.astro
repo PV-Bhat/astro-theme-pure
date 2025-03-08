@@ -1,49 +1,90 @@
 ---
-import { getBlogCollection, getUniqueTagsWithCount } from 'astro-pure/server'
-import { Button } from 'astro-pure/user'
-import { cn } from 'astro-pure/utils'
-import PageLayout from '@/layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import BaseHead from '@/components/BaseHead.astro';
+import TagCloud from '@/components/core/TagCloud.astro';
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro';
+import config from '@/site-config';
 
-const allPosts = await getBlogCollection()
-const allTags = getUniqueTagsWithCount(allPosts)
+// Import styles directly using relative paths
+import '../../styles/animations.css';
+import '../../styles/glass.css';
 
-const meta = {
-  description: "A list of all the topics I've written about in my posts",
-  title: 'All Tags'
-}
+// Add prerender directive for static generation
+export const prerender = true;
+
+// Get all unique tags
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+const allItems = [...allPosts, ...allProjects];
+
+// Process tags ensuring they're trimmed and lowercased for consistency
+const allTags = [...new Set(allItems.flatMap(item => 
+  (item.data.tags || []).map(tag => tag.trim().toLowerCase())
+))];
+
+// Calculate tag counts
+const tagCounts = allTags.reduce((acc, tag) => {
+  acc[tag] = allItems.filter(item => 
+    item.data.tags && 
+    item.data.tags.some(t => t.trim().toLowerCase() === tag)
+  ).length;
+  return acc;
+}, {} as Record<string, number>);
+
+// Debug output for checking
+console.log(`Tags index: Found ${allTags.length} unique tags`);
+allTags.forEach(tag => {
+  console.log(`  - Tag "${tag}" has ${tagCounts[tag]} posts/projects`);
+});
+
+const title = 'All Tags';
+const description = 'Browse all tags used in blog posts and projects.';
+
+// Breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "Tags",
+    href: "/tags"
+  }
+];
 ---
 
-<PageLayout {meta}>
-  <Button title='Back' href='/blog' style='back' />
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 text-3xl font-medium'>Tags</h1>
-    </div>
+<html lang={config.locale.lang}>
+  <head>
+    <BaseHead 
+      articleDate={undefined} 
+      description={description} 
+      ogImage={undefined} 
+      title={title} 
+    />
+  </head>
 
-    <div id='content' class='animate'>
-      {
-        allTags.length > 0 ? (
-          <ul class='flex flex-wrap gap-4'>
-            {allTags.map(([tag, val]) => (
-              <li>
-                <Button
-                  href={`/tags/${tag}`}
-                  style='pill'
-                  class={cn(
-                    'items-start gap-x-1',
-                    val > 2 ? 'rounded-xl px-3 py-1 text-xl' : val > 1 && 'text-lg'
-                  )}
-                >
-                  {tag}
-                  <span class={val > 2 ? 'text-base' : 'text-xs'}>{val}</span>
-                </Button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Any tag yet.</p>
-        )
-      }
+  <body class='flex justify-center bg-background text-foreground'>
+    <div class='w-full max-w-[70rem] px-4 sm:px-7 lg:px-10'>
+      <Header />
+      <div class="container mx-auto px-4 py-8">
+        <!-- Breadcrumbs navigation -->
+        <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+        
+        <h1 class="text-3xl font-bold mb-8">All Tags</h1>
+        
+        <div class="glass p-6 rounded-lg">
+          <TagCloud 
+            tags={allTags} 
+            showCount={true} 
+            counts={tagCounts}
+          />
+        </div>
+
+        <div class="mt-12 text-center">
+          <p class="text-gray-400">
+            Click on any tag to see related posts and projects.
+          </p>
+        </div>
+      </div>
+      <Footer />
     </div>
-  </main>
-</PageLayout>
+  </body>
+</html>

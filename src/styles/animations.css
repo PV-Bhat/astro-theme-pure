@@ -1,0 +1,685 @@
+/**
+ * Animations CSS
+ * 
+ * Animation effects with a sleek, sophisticated aesthetic.
+ */
+
+/* Animation styles for consistent use across the site */
+
+/* Modern easing curves for snappier animations */
+:root {
+  --ease-snap: cubic-bezier(0.19, 1, 0.22, 1); /* Fast out, slow in - snappy */
+  --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Slight elastic bounce */
+  --ease-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy finish */
+  
+  /* Vibrant color palette */
+  --vibrant-green: 52, 211, 153;
+  --vibrant-blue: 56, 189, 248;
+  --vibrant-purple: 139, 92, 246;
+  --vibrant-orange: 249, 115, 22;
+  --vibrant-pink: 236, 72, 153;
+  --vibrant-gray: 169, 169, 169;
+}
+
+/* Fade in animation - faster and snappier */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate {
+  animation: fadeIn 0.2s var(--ease-snap) forwards;
+  opacity: 0;
+}
+
+/* Staggered animations for lists - faster sequence */
+.animate-stagger > * {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeIn 0.2s var(--ease-snap) forwards;
+}
+
+/* Faster staggered delays */
+.animate-stagger > *:nth-child(1) { animation-delay: 0.03s; }
+.animate-stagger > *:nth-child(2) { animation-delay: 0.06s; }
+.animate-stagger > *:nth-child(3) { animation-delay: 0.09s; }
+.animate-stagger > *:nth-child(4) { animation-delay: 0.12s; }
+.animate-stagger > *:nth-child(5) { animation-delay: 0.15s; }
+.animate-stagger > *:nth-child(6) { animation-delay: 0.18s; }
+.animate-stagger > *:nth-child(7) { animation-delay: 0.21s; }
+.animate-stagger > *:nth-child(8) { animation-delay: 0.24s; }
+.animate-stagger > *:nth-child(9) { animation-delay: 0.27s; }
+.animate-stagger > *:nth-child(10) { animation-delay: 0.30s; }
+
+/* Pulse animation - more dynamic */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1.5s var(--ease-snap) infinite;
+}
+
+/* Subtle pulse for indicators */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 1.5s var(--ease-snap) infinite;
+}
+
+/* Glow animation - more vibrant */
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(var(--vibrant-gray), 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(var(--vibrant-gray), 0.5);
+  }
+}
+
+.animate-glow {
+  animation: glow 2s var(--ease-snap) infinite;
+}
+
+/* Shimmer effect - faster */
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(5, 5, 5, 0.8) 0%,
+    rgba(15, 15, 15, 0.9) 25%,
+    rgba(5, 5, 5, 0.8) 50%,
+    rgba(15, 15, 15, 0.9) 75%,
+    rgba(5, 5, 5, 0.8) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
+
+/* Floating animation - more natural */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+.animate-float {
+  animation: float 3s var(--ease-snap) infinite;
+}
+
+/* Typing cursor animation */
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-cursor::after {
+  content: '|';
+  display: inline-block;
+  animation: blink 0.8s step-end infinite;
+  margin-left: 2px;
+  color: rgba(var(--vibrant-gray), 0.8);
+}
+
+/* Color glow variations */
+:root {
+  --glow-green: 0 0 15px rgba(var(--vibrant-green), 0.3);
+  --glow-blue: 0 0 15px rgba(var(--vibrant-blue), 0.3);
+  --glow-purple: 0 0 15px rgba(var(--vibrant-purple), 0.3);
+  --glow-orange: 0 0 15px rgba(var(--vibrant-orange), 0.3);
+  --glow-pink: 0 0 15px rgba(var(--vibrant-pink), 0.3);
+  --glow-gray: 0 0 15px rgba(var(--vibrant-gray), 0.3);
+}
+
+.green-glow {
+  box-shadow: var(--glow-green);
+  transition: box-shadow 0.2s var(--ease-snap);
+}
+
+.blue-glow {
+  box-shadow: var(--glow-blue);
+  transition: box-shadow 0.2s var(--ease-snap);
+}
+
+.purple-glow {
+  box-shadow: var(--glow-purple);
+  transition: box-shadow 0.2s var(--ease-snap);
+}
+
+.orange-glow {
+  box-shadow: var(--glow-orange);
+  transition: box-shadow 0.2s var(--ease-snap);
+}
+
+.pink-glow {
+  box-shadow: var(--glow-pink);
+  transition: box-shadow 0.2s var(--ease-snap);
+}
+
+.gray-glow {
+  box-shadow: var(--glow-gray);
+  transition: box-shadow 0.2s var(--ease-snap);
+}
+
+/* Animation delays - faster */
+.delay-100 {
+  animation-delay: 0.05s;
+}
+
+.delay-200 {
+  animation-delay: 0.1s;
+}
+
+.delay-300 {
+  animation-delay: 0.15s;
+}
+
+.delay-400 {
+  animation-delay: 0.2s;
+}
+
+.delay-500 {
+  animation-delay: 0.25s;
+}
+
+/* Hover transition - snappier */
+.hover-transition {
+  transition: all 0.2s var(--ease-snap);
+}
+
+.hover-transition:hover {
+  transform: translateY(-2px);
+}
+
+/* Fade-in animations - snappier */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale animations - snappier */
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleInUp {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Spotlight animation for hero sections */
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  100% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Glow pulse animation - improved */
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--vibrant-gray), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--vibrant-gray), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--vibrant-gray), 0);
+  }
+}
+
+/* Glint effect animation - use sparingly but faster */
+@keyframes glint {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* Apply animations to elements - all with improved easing */
+.animate-fade { animation: fadeIn 0.3s var(--ease-snap) forwards; }
+.animate-fade-up { animation: fadeInUp 0.3s var(--ease-snap) forwards; }
+.animate-fade-down { animation: fadeInDown 0.3s var(--ease-snap) forwards; }
+.animate-fade-left { animation: fadeInLeft 0.3s var(--ease-snap) forwards; }
+.animate-fade-right { animation: fadeInRight 0.3s var(--ease-snap) forwards; }
+.animate-scale { animation: scaleIn 0.3s var(--ease-snap) forwards; }
+.animate-scale-up { animation: scaleInUp 0.3s var(--ease-snap) forwards; }
+.animate-spotlight { animation: spotlight 0.5s var(--ease-snap) forwards; }
+.animate-glow-pulse { animation: glowPulse 1.5s infinite; }
+
+/* Animation delays - faster */
+.delay-600 { animation-delay: 0.35s; }
+.delay-700 { animation-delay: 0.4s; }
+.delay-800 { animation-delay: 0.45s; }
+.delay-900 { animation-delay: 0.5s; }
+.delay-1000 { animation-delay: 0.55s; }
+
+/* Hover effects - enhanced */
+.hover-lift {
+  transition: transform 0.2s var(--ease-snap);
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+}
+
+/* Gentle hover animation */
+.hover-gentle {
+  transition: all 0.2s var(--ease-snap);
+}
+
+.hover-gentle:hover {
+  filter: brightness(1.2);
+}
+
+/* Glow hover effect - main effect for most elements */
+.hover-glow {
+  transition: all 0.2s var(--ease-snap);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 15px rgba(var(--vibrant-gray), 0.2);
+  filter: brightness(1.1);
+}
+
+/* Color-specific hover glow effects */
+.hover-glow-green:hover {
+  box-shadow: 0 0 15px rgba(var(--vibrant-green), 0.2);
+  filter: brightness(1.1);
+}
+
+.hover-glow-blue:hover {
+  box-shadow: 0 0 15px rgba(var(--vibrant-blue), 0.2);
+  filter: brightness(1.1);
+}
+
+.hover-glow-purple:hover {
+  box-shadow: 0 0 15px rgba(var(--vibrant-purple), 0.2);
+  filter: brightness(1.1);
+}
+
+/* Glint effect - use sparingly for featured elements */
+.hover-glint {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-glint::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 90%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(var(--vibrant-gray), 0.07), 
+    rgba(var(--vibrant-gray), 0.1), 
+    rgba(var(--vibrant-gray), 0.07), 
+    transparent
+  );
+  transform: skewX(-25deg);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hover-glint:hover::before {
+  animation: glint 1s var(--ease-snap);
+}
+
+/* Scale hover */
+.hover-scale {
+  transition: transform 0.2s var(--ease-snap);
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Glow effect */
+.glow-effect {
+  position: relative;
+  z-index: 1;
+}
+
+.glow-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0;
+  box-shadow: 0 0 15px rgba(var(--vibrant-gray), 0.15);
+  transition: opacity 0.2s var(--ease-snap);
+  pointer-events: none;
+}
+
+.glow-effect:hover .glow-overlay {
+  opacity: 1;
+}
+
+/* Gradient background animation - more colorful */
+@keyframes gradientBg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-bg {
+  background: linear-gradient(-45deg, #0f172a, #1e293b, rgba(var(--vibrant-green), 0.2), rgba(var(--vibrant-blue), 0.2));
+  background-size: 400% 400%;
+  animation: gradientBg 12s ease infinite;
+}
+
+.animate-gradient-blue {
+  background: linear-gradient(-45deg, #0f172a, #1e293b, rgba(var(--vibrant-blue), 0.3), rgba(var(--vibrant-purple), 0.2));
+  background-size: 400% 400%;
+  animation: gradientBg 12s ease infinite;
+}
+
+.animate-gradient-purple {
+  background: linear-gradient(-45deg, #0f172a, #1e293b, rgba(var(--vibrant-purple), 0.3), rgba(var(--vibrant-pink), 0.2));
+  background-size: 400% 400%;
+  animation: gradientBg 12s ease infinite;
+}
+
+/* Sparkle animation - faster */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.sparkle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: rgba(var(--vibrant-gray), 0.8);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sparkle-1 { animation: sparkle 3s infinite 0s; }
+.sparkle-2 { animation: sparkle 3s infinite 0.3s; }
+.sparkle-3 { animation: sparkle 3s infinite 0.6s; }
+.sparkle-4 { animation: sparkle 3s infinite 0.9s; }
+.sparkle-5 { animation: sparkle 3s infinite 1.2s; }
+
+/* Accessibility: respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Dynamic Background Animation - improved */
+@keyframes subtleGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.dynamic-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1000;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 15, 1) 0%,
+    rgba(22, 22, 22, 1) 25%,
+    rgba(17, 17, 17, 1) 50%,
+    rgba(25, 25, 25, 1) 75%,
+    rgba(15, 15, 15, 1) 100%
+  );
+  background-size: 400% 400%;
+  animation: subtleGradientShift 12s ease infinite;
+  opacity: 1;
+}
+
+.dynamic-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/noise.svg');
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Colored dynamic backgrounds */
+.dynamic-bg-blue {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 15, 1) 0%,
+    rgba(22, 22, 22, 1) 20%,
+    rgba(10, 20, 30, 1) 50%,
+    rgba(22, 22, 22, 1) 80%,
+    rgba(15, 15, 15, 1) 100%
+  );
+  background-size: 400% 400%;
+  animation: subtleGradientShift 12s ease infinite;
+}
+
+.dynamic-bg-green {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 15, 1) 0%,
+    rgba(22, 22, 22, 1) 20%,
+    rgba(10, 25, 15, 1) 50%,
+    rgba(22, 22, 22, 1) 80%,
+    rgba(15, 15, 15, 1) 100%
+  );
+  background-size: 400% 400%;
+  animation: subtleGradientShift 12s ease infinite;
+}
+
+.dynamic-bg-purple {
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 15, 1) 0%,
+    rgba(22, 22, 22, 1) 20%,
+    rgba(20, 10, 25, 1) 50%,
+    rgba(22, 22, 22, 1) 80%,
+    rgba(15, 15, 15, 1) 100%
+  );
+  background-size: 400% 400%;
+  animation: subtleGradientShift 12s ease infinite;
+}
+
+/* Subtle floating particles */
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background-color: rgba(150, 150, 150, 0.2);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+@keyframes floatParticle {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-100px) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* Bounce animation - snappier */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+    animation-timing-function: var(--ease-bounce);
+  }
+  50% {
+    transform: translateY(-10px);
+    animation-timing-function: var(--ease-bounce);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 0.8s var(--ease-bounce) infinite;
+}
+
+.hover-bounce {
+  transition: transform 0.2s var(--ease-snap);
+}
+
+.hover-bounce:hover {
+  transform: scale(1.05);
+  animation: bounce 0.8s var(--ease-bounce) infinite;
+}
+
+/* Pop animation */
+@keyframes pop {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  40% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(0.98);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pop {
+  animation: pop 0.4s var(--ease-elastic) forwards;
+}
+
+/* Vibrant hover effect for key elements */
+.hover-vibrant {
+  transition: all 0.2s var(--ease-snap);
+}
+
+.hover-vibrant:hover {
+  filter: brightness(1.2) contrast(1.1);
+  transform: translateY(-3px) scale(1.02);
+} 

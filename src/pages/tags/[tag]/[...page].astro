@@ -6,6 +6,7 @@ import { Paginator, PostPreview } from 'astro-pure/components/pages'
 import { getBlogCollection, getUniqueTags, sortMDByDate } from 'astro-pure/server'
 import { Button } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
 import config from '@/site-config'
 
 export const prerender = true
@@ -31,6 +32,26 @@ interface Props {
 const { page } = Astro.props
 const { tag } = Astro.params
 
+// Breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "Blog",
+    href: "/blog"
+  },
+  {
+    label: `Tag: ${tag}`,
+    href: `/tags/${tag}`
+  }
+];
+
+// Add pagination to breadcrumbs if not on first page
+if (page.currentPage > 1) {
+  breadcrumbItems.push({
+    label: `Page ${page.currentPage}`,
+    href: page.url.current
+  });
+}
+
 const meta = {
   description: `View all posts with the tag - ${tag}`,
   title: `Tag: ${tag}`
@@ -53,20 +74,24 @@ const paginationProps = {
 ---
 
 <PageLayout {meta}>
-  <Button title='Back' href='/blog' style='back' />
-  <main class='mt-6 lg:mt-10'>
-    <div id='content-header' class='animate'>
-      <h1 class='mb-6 flex items-end gap-x-2 text-3xl font-medium'>
-        Tags:
-        <span class='text-2xl'>#{tag}</span>
-      </h1>
-    </div>
+  <div class="max-w-4xl mx-auto">
+    <!-- Breadcrumbs navigation -->
+    <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+    
+    <main class='mt-6 lg:mt-10'>
+      <div id='content-header' class='animate'>
+        <h1 class='mb-6 flex items-end gap-x-2 text-3xl font-medium'>
+          Tags:
+          <span class='text-2xl'>#{tag}</span>
+        </h1>
+      </div>
 
-    <section id='content' class='animate' aria-label='Blog post list'>
-      <ul class='flex flex-col gap-y-3 text-start'>
-        {page.data.map((post) => <PostPreview as='h2' {post} detailed />)}
-      </ul>
-      <Paginator {...paginationProps} />
-    </section>
-  </main>
+      <section id='content' class='animate' aria-label='Blog post list'>
+        <ul class='flex flex-col gap-y-3 text-start'>
+          {page.data.map((post) => <PostPreview as='h2' {post} detailed />)}
+        </ul>
+        <Paginator {...paginationProps} />
+      </section>
+    </main>
+  </div>
 </PageLayout>

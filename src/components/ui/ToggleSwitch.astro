@@ -1,0 +1,126 @@
+---
+interface Props {
+  id: string;
+  leftLabel?: string;
+  rightLabel?: string;
+  checked?: boolean;
+  accentColor?: string;
+  labelClass?: string;
+  class?: string;
+}
+
+const {
+  id,
+  leftLabel,
+  rightLabel,
+  checked = false,
+  accentColor = "rgb(59, 130, 246)",
+  labelClass = "text-gray-400",
+  class: className = "",
+} = Astro.props;
+---
+
+<div class={`toggle-switch-container flex items-center gap-3 ${className}`}>
+  {leftLabel && <span class={`text-sm ${labelClass} ${!checked ? "text-white font-medium" : ""}`}>{leftLabel}</span>}
+  
+  <label for={id} class="toggle-switch relative inline-flex cursor-pointer items-center">
+    <input
+      type="checkbox"
+      id={id}
+      class="peer sr-only"
+      checked={checked}
+    />
+    <div class="toggle-track h-6 w-12 rounded-full bg-[#0a0f1c] p-1">
+      <div class="toggle-thumb absolute left-[2px] top-[2px] h-5 w-5 rounded-full bg-gray-700 shadow-sm transition-all"></div>
+      <div class="toggle-glow absolute inset-0 scale-105 rounded-full opacity-0 blur-sm transition-opacity"></div>
+    </div>
+  </label>
+  
+  {rightLabel && <span class={`text-sm ${labelClass} ${checked ? "text-white font-medium" : ""}`}>{rightLabel}</span>}
+</div>
+
+<script define:vars={{ id, accentColor }}>
+  // Make the toggle functional
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleSwitch = document.getElementById(id);
+    const container = toggleSwitch?.closest('.toggle-switch-container');
+    const leftLabel = container?.querySelector('span:first-child');
+    const rightLabel = container?.querySelector('span:last-child');
+    const toggleTrack = container?.querySelector('.toggle-track');
+    const toggleThumb = toggleTrack?.querySelector('.toggle-thumb');
+    const toggleGlow = toggleTrack?.querySelector('.toggle-glow');
+    
+    // Apply accent color and styles via JavaScript
+    if (toggleThumb && toggleGlow) {
+      // Set glow color
+      toggleGlow.style.background = accentColor;
+      
+      // Function to update toggle state
+      const updateToggleState = (checked) => {
+        if (checked) {
+          toggleThumb.style.transform = 'translateX(100%)';
+          toggleThumb.style.backgroundColor = accentColor;
+          toggleGlow.style.opacity = '0.25';
+          
+          // Update labels if they exist
+          if (leftLabel && rightLabel) {
+            leftLabel.classList.remove('text-white', 'font-medium');
+            rightLabel.classList.add('text-white', 'font-medium');
+          }
+        } else {
+          toggleThumb.style.transform = 'translateX(0)';
+          toggleThumb.style.backgroundColor = '#4B5563'; // gray-700
+          toggleGlow.style.opacity = '0';
+          
+          // Update labels if they exist
+          if (leftLabel && rightLabel) {
+            rightLabel.classList.remove('text-white', 'font-medium');
+            leftLabel.classList.add('text-white', 'font-medium');
+          }
+        }
+      };
+      
+      // Initialize state
+      updateToggleState(toggleSwitch.checked);
+      
+      // Listen for changes
+      toggleSwitch?.addEventListener('change', (e) => {
+        updateToggleState(e.target.checked);
+        
+        // Dispatch custom event for other components to listen to
+        const detail = { checked: e.target.checked };
+        const event = new CustomEvent('toggle-change', { detail });
+        document.dispatchEvent(event);
+        
+        // Add pulse animation
+        toggleThumb.classList.add('pulse-animation');
+        setTimeout(() => {
+          toggleThumb.classList.remove('pulse-animation');
+        }, 1500);
+      });
+    }
+  });
+</script>
+
+<style>
+  .toggle-switch-container {
+    transition: all 0.3s ease;
+  }
+  
+  /* Add subtle pulse animation when toggled */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+  }
+  
+  .pulse-animation {
+    animation: pulse 1.5s 1;
+  }
+</style> 

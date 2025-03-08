@@ -1,259 +1,370 @@
 ---
-import { Comment } from 'astro-pure/advanced'
-import { Button, Collapse, Spoiler, Timeline } from 'astro-pure/user'
-import PageLayout from '@/layouts/CommonPage.astro'
-import Substats from '@/components/about/Substats.astro'
-import ToolSection from '@/components/about/ToolSection.astro'
+import { Image } from 'astro:assets'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
+import config from '@/site-config'
+import '../../styles/animations.css'
+import '../../styles/glass.css'
 
-const headings = [
-  { depth: 2, slug: 'hobbies', text: 'Hobbies' },
-  { depth: 2, slug: 'tools', text: 'Tools' },
-  { depth: 2, slug: 'social-networks', text: 'Social Networks' },
-  { depth: 2, slug: 'gossips', text: 'Gossips' },
-  { depth: 2, slug: 'about-blog', text: 'About Blog' }
+const skills = {
+  Top: [
+    'Systems Engineering', 
+    'Critical Thinking', 
+    'Ethical Decision Making'
+  ],
+  Primary: [
+    'AI', 
+    'Machine Learning',
+    'Biotechnology',
+    'Research Strategy'
+  ],
+  Secondary: [
+    'Content Creation',
+    'Project Management',
+    'Data Analysis',
+    'Cross-functional Collaboration'
+  ]
+}
+
+const tools = [
+  {
+    category: "Development",
+    items: [
+      { name: "VS Code", description: "Primary code editor" },
+      { name: "GitHub", description: "Version control" },
+      { name: "Node.js", description: "JavaScript runtime" }
+    ]
+  },
+  {
+    category: "Design",
+    items: [
+      { name: "Figma", description: "UI/UX design" },
+      { name: "Adobe Photoshop", description: "Image editing" }
+    ]
+  }
 ]
+
+const experiences = [
+  {
+    title: "Senior Developer",
+    company: "Tech Company, Inc.",
+    period: "2020 - Present",
+    achievements: [
+      "Led the development of a major application that increased client engagement by 40%",
+      "Mentored junior developers and implemented code review processes",
+      "Collaborated with the design team to improve UI/UX across platforms"
+    ]
+  },
+  {
+    title: "Web Developer",
+    company: "Digital Solutions Company",
+    period: "2017 - 2020",
+    achievements: [
+      "Developed responsive websites for various clients across industries",
+      "Implemented SEO best practices resulting in 25% increase in organic traffic",
+      "Managed projects from inception to deployment"
+    ]
+  }
+]
+
+const contactInfo = [
+  { type: "Email", value: "your.email@example.com", link: "mailto:your.email@example.com" },
+  { type: "Twitter", value: "@yourusername", link: "https://twitter.com/yourusername" },
+  { type: "LinkedIn", value: "linkedin.com/in/yourusername", link: "https://linkedin.com/in/yourusername" },
+  { type: "Contact", value: "Get in touch", link: "/contact", isButton: true }
+]
+
+// Breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "About",
+    href: "/about"
+  }
+];
 ---
 
-<PageLayout title='About' {headings} info='/about'>
-  <p>Developer / Designer</p>
-  <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio
-    possit voluptatum.
-  </p>
-  <p>My motto: Stay hungry, Stay foolish. <Spoiler>这里可以夹私货</Spoiler></p>
-  <Button title='Sponsor Me' class='w-fit' href='/projects#sponsorship' style='ahead' />
+<style>
+  /* Darker background */
+  :global(body) {
+    background-color: #050505;
+  }
+  
+  .glass-card {
+    background: rgba(5, 5, 5, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(52, 211, 153, 0.1);
+    border-radius: 0.75rem;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    overflow: hidden;
+  }
+  
+  .glass-card:hover {
+    background: rgba(10, 10, 15, 0.7);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  .section-heading {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 3rem;
+    height: 2px;
+    background: linear-gradient(to right, rgba(52, 211, 153, 0.8), rgba(20, 184, 166, 0.4));
+  }
+  
+  .skill-tag {
+    background: rgba(5, 10, 15, 0.8);
+    transition: all 0.3s ease;
+  }
+  
+  .skill-tag:hover {
+    background: rgba(5, 150, 105, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+  }
+  
+  .timeline-item {
+    border-left: 2px solid rgba(52, 211, 153, 0.5);
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(52, 211, 153, 0.8);
+  }
+  
+  /* Contact button */
+  .contact-button {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.8), rgba(16, 185, 129, 0.8));
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  .contact-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .contact-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+  }
+  
+  .contact-button:hover::before {
+    opacity: 1;
+  }
+  
+  /* Streak-lined animations */
+  .streak {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      rgba(52, 211, 153, 0) 0%, 
+      rgba(52, 211, 153, 0.2) 50%, 
+      rgba(52, 211, 153, 0) 100%
+    );
+    opacity: 0.4;
+    transform: rotate(-45deg);
+    transform-origin: 50% 50%;
+  }
+  
+  .streak-1 {
+    width: 35vw;
+    top: 15%;
+    left: -5%;
+    opacity: 0.3;
+  }
+  
+  .streak-2 {
+    width: 35vw;
+    top: 45%;
+    right: -10%;
+    opacity: 0.2;
+  }
+  
+  .streak-3 {
+    width: 30vw;
+    bottom: 25%;
+    left: 5%;
+    opacity: 0.25;
+  }
+</style>
 
-  {/* general-talk */}
-  <h2 id='hobbies'>Hobbies</h2>
-  <ul>
-    <li>Lorem ipsum dolor sit amet, vidit suscipit at mei.</li>
-    <li>
-      Quem denique mea id. Usu ei regione indoctum dissentiunt, cu meliore fuisset mei, vel quod
-      voluptua ne.
-    </li>
-    <li>Ex dicat impedit mel, at eum oratio possit voluptatum.</li>
-    <li>Impetus fuisset ullamcorper pri cu, his posse iisque ad, aliquam honestatis usu id.</li>
-  </ul>
-
-  {/* tools */}
-  <h2 id='tools'>Tools</h2>
-  <p>Current support tools as follow:</p>
-  <ToolSection
-    class='mb-5'
-    title='Design'
-    tools={[
-      {
-        name: 'Photoshop',
-        description: 'Picture Editing',
-        href: 'https://www.adobe.com/products/photoshop',
-        icon: import('@/assets/tools/photoshop.svg?raw')
-      },
-      {
-        name: 'Illustrator',
-        description: 'Vector Drawing',
-        href: 'https://www.adobe.com/products/illustrator',
-        icon: import('@/assets/tools/illustrator.svg?raw')
-      },
-      {
-        name: 'After Effects',
-        description: 'Motion Graphics',
-        href: 'https://www.adobe.com/products/aftereffects',
-        icon: import('@/assets/tools/aftereffects.svg?raw')
-      },
-      {
-        name: 'Premiere Pro',
-        description: 'Video Editing',
-        href: 'https://www.adobe.com/products/premiere',
-        icon: import('@/assets/tools/premiere.svg?raw')
-      }
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Productivity'
-    tools={[
-      {
-        name: 'Chrome',
-        description: 'Broswer',
-        href: 'https://www.google.com/chrome/',
-        icon: import('@/assets/tools/chrome.svg?raw')
-      },
-      {
-        name: 'Firefox',
-        description: 'Broswer',
-        href: 'https://www.mozilla.org/en-US/firefox',
-        icon: import('@/assets/tools/firefox.svg?raw')
-      },
-      {
-        name: 'Notion',
-        description: 'Note Taking',
-        href: 'https://www.notion.so/',
-        icon: import('@/assets/tools/notion.svg?raw')
-      },
-      {
-        name: 'Typora',
-        description: 'Markdown Editor',
-        href: 'https://typora.io/',
-        icon: import('@/assets/tools/typora.svg?raw')
-      }
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Development'
-    tools={[
-      {
-        name: 'VS Code',
-        description: 'IDE',
-        href: 'https://code.visualstudio.com/',
-        icon: import('@/assets/tools/vscode.svg?raw')
-      },
-      {
-        name: 'Neovim',
-        description: 'IDE',
-        href: 'https://neovim.io/',
-        icon: import('@/assets/tools/neovim.svg?raw')
-      },
-      {
-        name: 'Sublime Text',
-        description: 'IDE',
-        href: 'https://www.sublimetext.com/',
-        icon: import('@/assets/tools/sublime.svg?raw')
-      }
-    ]}
-  />
-  <ToolSection
-    class='mb-5'
-    title='Environment'
-    tools={[
-      {
-        name: 'Arch Linux',
-        description: 'Linux Distribution',
-        href: 'https://archlinux.org/',
-        icon: import('@/assets/tools/archlinux.svg?raw')
-      },
-      {
-        name: 'Ubuntu 24.04 LTS',
-        description: 'Linux Distribution',
-        href: 'https://ubuntu.com/',
-        icon: import('@/assets/tools/ubuntu.svg?raw')
-      },
-      {
-        name: 'MacOS Sonoma',
-        description: 'MacBook Air',
-        href: 'https://www.apple.com/macos/',
-        icon: import('@/assets/tools/apple.svg?raw')
-      },
-      {
-        name: 'Windows 11',
-        description: 'Rog Strix G15',
-        href: 'https://news.microsoft.com/windows11-general-availability/',
-        icon: import('@/assets/tools/windows11.svg?raw')
-      }
-    ]}
-  />
-
-  {/* social-networks */}
-  <h2 id='social-networks'>Social Networks</h2>
-  <p>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne.
-  </p>
-  <Substats
-    stats={[
-      {
-        platform: 'GitHub',
-        icon: 'github',
-        link: 'https://github.com/cworld1',
-        text: 'followers',
-        api: 'github/cworld1'
-      },
-      {
-        platform: 'Telegram',
-        icon: 'telegram',
-        color: '#2ca5e0',
-        link: 'https://t.me/cworld0_cn',
-        text: 'subscribers',
-        api: 'telegram/cworld0_cn'
-      },
-      {
-        platform: 'Weibo',
-        icon: 'weibo',
-        color: '#e71f19',
-        link: 'https://weibo.com/cworld0',
-        text: 'followers',
-        api: 'weibo/5501674056'
-      },
-      {
-        platform: 'Steam',
-        icon: 'steam',
-        color: '#50769d',
-        link: 'https://steamcommunity.com/id/cworld',
-        text: 'games',
-        api: 'steamgames/76561199021278120'
-      }
-    ]}
-  />
-
-  {/* gossips */}
-  <h2 id='gossips'>Gossips</h2>
-  <Collapse title='Lorem ipsum'>
-    Lorem ipsum dolor sit amet, vidit suscipit at mei. Quem denique mea id. Usu ei regione indoctum
-    dissentiunt, cu meliore fuisset mei, vel quod voluptua ne. Ex dicat impedit mel, at eum oratio
-    possit voluptatum.
-  </Collapse>
-
-  {/* about-blog */}
-  <h2 id='about-blog'>About Blog</h2>
-  <p>Website history:</p>
-  <Timeline
-    events={[
-      {
-        date: '2024-04-29',
-        content:
-          'Website refectered using <a href="https://astro.build/" target="_blank">Astro</a> and <a href="https://github.com/srleom/astro-theme-resume" target="_blank">Astro Theme Resume</a>'
-      },
-      {
-        date: '2024-07-26',
-        content:
-          'Website abstracted as a theme and published on <a href="https://github.com/cworld1/astro-theme-pure"target="_blank">Github</a>'
-      },
-      {
-        date: '2024-07-27',
-        content: 'Writed website docs'
-      }
-    ]}
-  />
-  <p>
-    The smooth operation and personalized customization of website also rely on the resources and
-    technical support provided by the following excellent projects/service providers:
-  </p>
-  <ul>
-    <li>Domain: <a href='#' target='_blank'>Vercel</a></li>
-    <li>
-      Framework & Theme: <a href='https://astro.build/' target='_blank'>Astro</a> + <a
-        href='https://github.com/cworld1/astro-theme-pure'
-        target='_blank'>Astro Theme Pure</a
-      >
-    </li>
-    <li>
-      Site hosting: <a href='https://vercel.com/' target='_blank'>Vercel</a>
-    </li>
-    <li>
-      CI/CD: <a href='https://vercel.com/workflow' target='_blank'>Vercel Workflow</a>
-    </li>
-    <!-- <li>Resources speedup: <a href='https://cdn.cbd.int/' target='_blank'>CBD CDN</a></li> -->
-    <li>Comment system: <a href='https://waline.js.org' target='_blank'>Waline</a></li>
-    <li>
-      Visits: <a href='https://supabase.com/' target='_blank'>Supabase</a> +
-      <a href='https://waline.js.org/' target='_blank'>Waline</a>
-    </li>
-    <li>
-      Other statistics: <a href='https://github.com/spencerwooo/substats' target='_blank'
-        >Substats</a
-      >
-    </li>
-  </ul>
-  <Comment slot='bottom' />
-</PageLayout>
+<PageLayout meta={{ title: `About | ${config.title}`, description: `About ${config.title}` }}>
+  <div class="max-w-4xl mx-auto">
+    <!-- Breadcrumbs navigation -->
+    <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+    
+    <div class="min-h-screen py-16 relative">
+      <!-- Background with streaks -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="streak streak-1"></div>
+        <div class="streak streak-2"></div>
+        <div class="streak streak-3"></div>
+      </div>
+      
+      <div class="max-w-4xl mx-auto px-4 relative z-10">
+        <!-- Hero section -->
+        <div class="glass-card p-8 mb-16 animate-fade">
+          <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="w-40 h-40 rounded-full overflow-hidden flex-shrink-0 border-4 border-green-900">
+              <div class="w-full h-full bg-gradient-to-br from-gray-800 to-green-900 flex items-center justify-center text-4xl">
+                👤
+              </div>
+            </div>
+            
+            <div class="text-center md:text-left">
+              <h1 class="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
+                Pruthvi Bhat
+              </h1>
+              <p class="text-xl text-gray-300 mb-6 max-w-2xl">
+                {config.description}
+              </p>
+              
+              <div class="flex gap-4 justify-center md:justify-start">
+                <a href="https://github.com/yourusername" class="px-4 py-2 bg-black hover:bg-gray-900 rounded-md transition hover-glow">GitHub</a>
+                <a href="https://twitter.com/yourusername" class="px-4 py-2 bg-black hover:bg-gray-900 rounded-md transition hover-glow">Twitter</a>
+                <a href="https://linkedin.com/in/yourusername" class="px-4 py-2 bg-black hover:bg-gray-900 rounded-md transition hover-glow">LinkedIn</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- About Me section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-100">
+          <h2 class="text-3xl font-bold section-heading">About Me</h2>
+          <div class="prose prose-lg prose-invert max-w-none">
+            <p>
+              Hello! I'm a passionate professional working at the intersection of technology and innovation. 
+              With a background in both technical and creative fields, I strive to create solutions that are 
+              not only functional but also intuitive and user-friendly.
+            </p>
+            <p>
+              My journey in the tech industry began over a decade ago, and since then, I've had the privilege 
+              of working with diverse teams across various sectors. This experience has shaped my approach to 
+              problem-solving and collaboration, allowing me to adapt quickly to new challenges.
+            </p>
+            <p>
+              When I'm not coding or brainstorming ideas, you can find me exploring nature trails, 
+              experimenting with new recipes, or diving into a good book.
+            </p>
+          </div>
+        </section>
+        
+        <!-- Skills section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-200">
+          <h2 class="text-3xl font-bold section-heading">Skills</h2>
+          
+          <div class="space-y-8">
+            {Object.entries(skills).map(([category, skillList]) => (
+              <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-4 text-green-400">{category}</h3>
+                <div class="flex flex-wrap gap-3">
+                  {skillList.map(skill => (
+                    <span class="px-4 py-2 skill-tag rounded-md text-sm">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+        
+        <!-- Experience section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-300">
+          <h2 class="text-3xl font-bold section-heading">Experience</h2>
+          
+          <div class="mt-8">
+            {experiences.map((experience) => (
+              <div class="timeline-item">
+                <h3 class="text-xl font-bold">{experience.title}</h3>
+                <p class="text-green-400 mb-2">{experience.company} | {experience.period}</p>
+                <ul class="mt-2 space-y-1">
+                  {experience.achievements.map(achievement => (
+                    <li class="flex items-start">
+                      <span class="text-green-500 mr-2">•</span>
+                      <span>{achievement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+        
+        <!-- Tools section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-400">
+          <h2 class="text-3xl font-bold section-heading">Tools & Technologies</h2>
+          
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            {tools.map(toolCategory => (
+              <div>
+                <h3 class="text-xl font-semibold mb-4 text-green-400">{toolCategory.category}</h3>
+                <div class="space-y-4">
+                  {toolCategory.items.map(tool => (
+                    <div class="bg-black p-4 rounded-lg flex items-center hover-glow cursor-default">
+                      <div class="mr-4">
+                        <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-green-900 to-green-700 rounded-full text-xl">
+                          🔧
+                        </div>
+                      </div>
+                      <div>
+                        <h4 class="font-medium">{tool.name}</h4>
+                        <p class="text-sm text-gray-400">{tool.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+        
+        <!-- Contact section -->
+        <section class="glass-card p-8 animate-fade delay-500">
+          <h2 class="text-3xl font-bold section-heading">Contact</h2>
+          
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {contactInfo.map(item => (
+              item.isButton ? (
+                <a href={item.link} class="contact-button text-center py-4 px-6 rounded-lg text-white font-medium text-lg col-span-full md:col-span-2 md:w-1/2 md:mx-auto mt-4">
+                  {item.value}
+                </a>
+              ) : (
+                <a href={item.link} class="bg-black p-4 rounded-lg hover-glow">
+                  <h3 class="font-semibold text-green-400 mb-1">{item.type}</h3>
+                  <p class="text-gray-300">{item.value}</p>
+                </a>
+              )
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</PageLayout> 
