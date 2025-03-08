@@ -1,11 +1,17 @@
 ---
+interface Props {
+  class?: string;
+}
+
 // Navigation.astro
 import '../../styles/glass.css';
 import GradientButton from './GradientButton.astro';
 import config from '@/site-config';
+
+const { class: className } = Astro.props;
 ---
 
-<navigation-component class="fixed top-0 left-1/2 -translate-x-1/2 w-[95%] max-w-screen-xl z-50 group">
+<navigation-component class={`fixed top-0 left-1/2 -translate-x-1/2 w-[95%] max-w-screen-xl z-50 group ${className || ''}`}>
   <header class="glass rounded-full mt-4 transition-all duration-300 group-[.not-top]:shadow-glow">
     <nav class="px-8 py-3.5 transition-all duration-300 group-[.not-top]:py-2.5">
       <div class="flex items-center justify-between">

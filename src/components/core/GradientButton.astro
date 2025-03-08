@@ -8,7 +8,7 @@ interface Props {
   class?: string;
   primaryColor?: string;
   secondaryColor?: string;
-  target?: string;
+  target?: '_self' | '_blank' | '_parent' | '_top';
   showArrow?: boolean;
   arrowDirection?: 'right' | 'left';
 }
@@ -125,53 +125,50 @@ const buttonText = text || title || '';
   }
 </style>
 
-<div class={`relative group ${className}`}>
-  <a
-    href={href}
-    target={target}
-    class="flex items-center justify-center px-4 py-2 rounded-full glass-button relative z-10"
-  >
-    <div class="glint-effect"></div>
-    <div
-      class="w-full h-full absolute inset-0 bg-[url(/noise.svg)] opacity-0 group-hover:opacity-30 transition-opacity duration-300 rounded-full"
+<a
+  href={href}
+  target={target}
+  class={`glass-button group relative inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all duration-300 ${className}`}
+  style={`--primary-color: ${primaryColor}; --secondary-color: ${secondaryColor};`}
+>
+  {showArrow && arrowDirection === 'left' && (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width="16" 
+      height="16" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      stroke-width="2" 
+      stroke-linecap="round" 
+      stroke-linejoin="round" 
+      class="transform rotate-180"
     >
-    </div>
-    <div class="flex items-center gap-2 relative z-10">
-      {arrowDirection === 'left' && showArrow && (
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="16" 
-          height="16" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          stroke-width="2.5" 
-          stroke-linecap="round" 
-          stroke-linejoin="round" 
-          class="text-[#34D399]"
-        >
-          <line x1="19" y1="12" x2="5" y2="12" class="arrow-line-left" />
-          <polyline points="12 19 5 12 12 5" class="arrow-points-left" />
-        </svg>
-      )}
-      <span class="text-white font-medium relative z-10">{buttonText}</span>
-      {arrowDirection === 'right' && showArrow && (
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="16" 
-          height="16" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          stroke-width="2.5" 
-          stroke-linecap="round" 
-          stroke-linejoin="round" 
-          class="text-[#34D399]"
-        >
-          <line x1="5" y1="12" x2="19" y2="12" class="arrow-line-right" />
-          <polyline points="12 5 19 12 12 19" class="arrow-points-right" />
-        </svg>
-      )}
-    </div>
-  </a>
-</div> 
+      <line x1="5" y1="12" x2="19" y2="12" class="arrow-line-left" />
+      <polyline points="12 5 19 12 12 19" class="arrow-points-left" />
+    </svg>
+  )}
+  
+  <span>{buttonText}</span>
+  
+  {showArrow && arrowDirection === 'right' && (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width="16" 
+      height="16" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      stroke-width="2" 
+      stroke-linecap="round" 
+      stroke-linejoin="round"
+    >
+      <line x1="5" y1="12" x2="19" y2="12" class="arrow-line-right" />
+      <polyline points="12 5 19 12 12 19" class="arrow-points-right" />
+    </svg>
+  )}
+  
+  <div class="card-gradient absolute inset-0 -z-10 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+    style={`background: linear-gradient(45deg, rgb(${primaryColor} / 0.1), rgb(${secondaryColor} / 0.1));`}>
+  </div>
+</a> 

@@ -37,6 +37,43 @@ const filteredHeadings = headings.filter(
   </div>
 </toc-component>
 
+<script>
+  class TOCComponent extends HTMLElement {
+    constructor() {
+      super();
+      this.setupIntersectionObserver();
+    }
+
+    setupIntersectionObserver() {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const id = entry.target.getAttribute('id');
+            const tocLink = this.querySelector(`a[href="#${id}"]`);
+            const tocProgress = tocLink?.previousElementSibling;
+            
+            if (entry.isIntersecting) {
+              tocLink?.classList.add('active');
+              tocProgress?.classList.add('active', 'readed');
+            } else {
+              tocLink?.classList.remove('active');
+              tocProgress?.classList.remove('active');
+            }
+          });
+        },
+        { rootMargin: '-100px 0px -66%' }
+      );
+
+      // Observe all section headings
+      document.querySelectorAll('h2, h3').forEach((heading) => {
+        observer.observe(heading);
+      });
+    }
+  }
+
+  customElements.define('toc-component', TOCComponent);
+</script>
+
 <style>
   .toc-item {
     position: relative;
@@ -67,102 +104,4 @@ const filteredHeadings = headings.filter(
   .toc-progress.active {
     opacity: 1;
   }
-</style>
-
-<script>
-  class TOCComponent extends HTMLElement {
-    headings: HTMLElement[] = [];
-    tocLinks: {
-      element: HTMLAnchorElement;
-      progressBar: HTMLElement;
-      slug: string;
-    }[] = [];
-    headingProgress: Record<string, { inView: boolean; progress: number }> = {};
-    
-    constructor() {
-      super();
-      
-      // Initialize headings and TOC links after the document has loaded
-      window.addEventListener('load', () => {
-        this.init();
-      });
-    }
-    
-    init() {
-      // Find all headings in the content
-      this.headings = Array.from(
-        document.querySelectorAll('article h2, article h3')
-      );
-      
-      // Get all TOC links
-      this.tocLinks = Array.from(this.querySelectorAll('.toc-link')).map((link) => {
-        const anchor = link as HTMLAnchorElement;
-        return {
-          element: anchor,
-          progressBar: anchor.previousElementSibling as HTMLElement,
-          slug: (anchor.getAttribute('href') || '').substring(1)
-        };
-      });
-      
-      // Add scroll event handler
-      this.updatePositionsAndStyles();
-      window.addEventListener('scroll', () => {
-        this.updatePositionsAndStyles();
-      });
-      
-      // Add smooth scrolling
-      this.tocLinks.forEach(({ element, slug }) => {
-        element.addEventListener('click', (e) => {
-          e.preventDefault();
-          const headingElement = document.getElementById(slug);
-          
-          if (headingElement) {
-            window.history.pushState(null, '', `#${slug}`);
-            headingElement.scrollIntoView({ behavior: 'smooth' });
-          }
-        });
-      });
-    }
-    
-    updatePositionsAndStyles() {
-      const windowHeight = window.innerHeight;
-      const pageOffset = window.scrollY;
-      
-      // Calculate heading positions and progress
-      this.headings.forEach((heading, index) => {
-        const nextHeadingTop = this.headings[index + 1]?.offsetTop || document.body.scrollHeight;
-        const headingRect = heading.getBoundingClientRect();
-        const headingTop = headingRect.top + window.scrollY;
-        
-        // Calculate range and progress
-        const range = [
-          headingTop - pageOffset, 
-          nextHeadingTop - pageOffset - heading.offsetHeight
-        ];
-        const progress = (windowHeight - range[0]) / (range[1] - range[0]);
-        
-        this.headingProgress[heading.id] = {
-          inView: range[0] < windowHeight && range[1] > 0,
-          progress: Math.max(0, Math.min(1, progress))
-        };
-      });
-      
-      // Update TOC link styles based on progress
-      this.tocLinks.forEach(({ element, progressBar, slug }) => {
-        const { inView, progress } = this.headingProgress[slug] || { inView: false, progress: 0 };
-        
-        element.classList.toggle('active', inView);
-        progressBar.classList.toggle('active', inView);
-        progressBar.classList.toggle('readed', !inView && progress >= 1);
-        
-        if (inView || progress >= 1) {
-          progressBar.style.height = `${Math.min(progress * 100, 100)}%`;
-        } else {
-          progressBar.style.height = '0%';
-        }
-      });
-    }
-  }
-  
-  customElements.define('toc-component', TOCComponent);
-</script> 
+</style> 
