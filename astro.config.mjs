@@ -107,6 +107,16 @@ export default defineConfig({
       //     emitFile: true,
       //     filename: 'stats.html'
       //   })
-    ]
+    ],
+    // Properly handle external dependencies
+    build: {
+      rollupOptions: {
+        external: [
+          'sharp',
+          'pagefind',
+          '@waline/client'
+        ]
+      }
+    }
   }
 })
