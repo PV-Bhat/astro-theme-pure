@@ -1,0 +1,447 @@
+---
+import { Image } from 'astro:assets'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
+import config from '../../site.config'
+import '../../styles/animations.css'
+import '../../styles/glass.css'
+
+const skills = {
+  Top: [
+    'Systems Engineering', 
+    'Critical Thinking', 
+    'Ethical Decision Making'
+  ],
+  Primary: [
+    'AI', 
+    'Machine Learning',
+    'Biotechnology',
+    'Research Strategy'
+  ],
+  Secondary: [
+    'Content Creation',
+    'Project Management',
+    'Data Analysis',
+    'Cross-functional Collaboration'
+  ]
+}
+
+// Experiences from LinkedIn profile
+const experiences = [
+  {
+    title: "Lead Researcher | AI & Systems",
+    company: "MURST Initiative",
+    period: "December 2024 - Present (4 months)",
+    achievements: []
+  },
+  {
+    title: "Content and Engagement Associate",
+    company: "Nbyula - Skillizens without Borders",
+    period: "September 2024 - November 2024 (3 months)",
+    achievements: [
+      "Core role responsibilities included creative content scripting and planning, lead engagement, and qualification",
+      "Designed Leads Wizard, a personal project and AI-driven system to innovate lead qualification and engagement processes",
+      "Guided the integration of a streamlined, custom version of my Leads Wizard system to fit existing workflows"
+    ]
+  },
+  {
+    title: "Mentor",
+    company: "Synapse",
+    period: "March 2024 - August 2024 (6 months)",
+    achievements: [
+      "Provided guidance to junior members, helping them navigate leadership positions responsibly",
+      "Ensured the culture of taking initiative and maintaining transparency through leading by example"
+    ]
+  },
+  {
+    title: "President",
+    company: "Synapse",
+    period: "January 2023 - March 2024 (1 year 3 months)",
+    achievements: [
+      "Led efforts to establish a student community, plan and execute extracurricular experiences",
+      "Established a centralized resource database by collecting past papers, notes, and study materials",
+      "Built connections with industry professionals, including collaborations with Bangalore Bioinnovation Centre"
+    ]
+  },
+  {
+    title: "Freelance Copywriter",
+    company: "Freelance",
+    period: "March 2024 - June 2024 (4 months)",
+    achievements: [
+      "Wrote SEO-driven product listings for a gemstone startup",
+      "Created sustainability content for an LLP, producing well-researched articles",
+      "Combined skills in copywriting, SEO, and research to develop content"
+    ]
+  },
+  {
+    title: "Content Developer",
+    company: "PW (PhysicsWallah)",
+    period: "September 2023 - November 2023 (3 months)",
+    achievements: [
+      "Collaborated with the Academics R&D intern team to develop 1000+ pieces of educational content",
+      "Implemented content automation strategies, reducing turnaround time by 25%",
+      "Led initiative for creative approaches to content integration"
+    ]
+  }
+]
+
+const tools = [
+  {
+    category: "Development",
+    items: [
+      { name: "AI Tools", description: "Prompt engineering & integration" },
+      { name: "Data Analysis", description: "Research methodology" },
+      { name: "Systems Design", description: "Process optimization" }
+    ]
+  },
+  {
+    category: "Content & Design",
+    items: [
+      { name: "Content Creation", description: "SEO & engagement" },
+      { name: "Workflow Automation", description: "Process efficiency" }
+    ]
+  }
+]
+
+const contactInfo = [
+  { type: "Email", value: "astroagario03@gmail.com", link: "mailto:astroagario03@gmail.com" },
+  { type: "LinkedIn", value: "linkedin.com/in/pruthvi-bhat-", link: "https://linkedin.com/in/pruthvi-bhat-" },
+  { type: "Contact", value: "Get in touch", link: "/contact", isButton: true }
+]
+
+// Breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "About",
+    href: "/about"
+  },
+  {
+    label: "Resume",
+    href: "/about/resume"
+  }
+];
+---
+
+<style>
+  /* Darker background */
+  :global(body) {
+    background-color: #050505;
+  }
+  
+  .glass-card {
+    background: rgba(5, 5, 5, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(52, 211, 153, 0.1);
+    border-radius: 0.75rem;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    overflow: hidden;
+  }
+  
+  .glass-card:hover {
+    background: rgba(10, 10, 15, 0.7);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  .section-heading {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 3rem;
+    height: 2px;
+    background: linear-gradient(to right, rgba(52, 211, 153, 0.8), rgba(20, 184, 166, 0.4));
+  }
+  
+  .skill-tag {
+    background: rgba(5, 10, 15, 0.8);
+    transition: all 0.3s ease;
+  }
+  
+  .skill-tag:hover {
+    background: rgba(5, 150, 105, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+  }
+  
+  .timeline-item {
+    border-left: 2px solid rgba(52, 211, 153, 0.5);
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(52, 211, 153, 0.8);
+  }
+  
+  /* Contact button */
+  .contact-button {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.8), rgba(16, 185, 129, 0.8));
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  .contact-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.8), rgba(5, 150, 105, 0.8));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .contact-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+  }
+  
+  .contact-button:hover::before {
+    opacity: 1;
+  }
+  
+  /* Streak-lined animations */
+  .streak {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      rgba(52, 211, 153, 0) 0%, 
+      rgba(52, 211, 153, 0.2) 50%, 
+      rgba(52, 211, 153, 0) 100%
+    );
+    opacity: 0.4;
+    transform: rotate(-45deg);
+    transform-origin: 50% 50%;
+  }
+  
+  .streak-1 {
+    width: 35vw;
+    top: 15%;
+    left: -5%;
+    opacity: 0.3;
+  }
+  
+  .streak-2 {
+    width: 35vw;
+    top: 45%;
+    right: -10%;
+    opacity: 0.2;
+  }
+  
+  .streak-3 {
+    width: 30vw;
+    bottom: 25%;
+    left: 5%;
+    opacity: 0.25;
+  }
+</style>
+
+<PageLayout meta={{ title: `Resume | ${config.title}`, description: `Professional Resume for ${config.title}` }}>
+  <div class="max-w-4xl mx-auto">
+    <!-- Breadcrumbs navigation -->
+    <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+    
+    <div class="min-h-screen py-16 relative">
+      <!-- Background with streaks -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="streak streak-1"></div>
+        <div class="streak streak-2"></div>
+        <div class="streak streak-3"></div>
+      </div>
+      
+      <div class="max-w-4xl mx-auto px-4 relative z-10">
+        <!-- Hero section -->
+        <div class="glass-card p-8 mb-16 animate-fade">
+          <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="w-40 h-40 rounded-full overflow-hidden flex-shrink-0 border-4 border-green-900">
+              <div class="w-full h-full bg-gradient-to-br from-gray-800 to-green-900 flex items-center justify-center text-4xl">
+                👤
+              </div>
+            </div>
+            
+            <div class="text-center md:text-left">
+              <h1 class="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
+                Pruthvi Bhat
+              </h1>
+              <p class="text-xl text-gray-300 mb-6 max-w-2xl">
+                AI Innovator | Lead Researcher @ MURST | Combining Technology, People, & Systems
+              </p>
+              
+              <div class="flex gap-4 justify-center md:justify-start">
+                <a href="mailto:astroagario03@gmail.com" class="px-4 py-2 bg-black hover:bg-gray-900 rounded-md transition hover-glow">Email</a>
+                <a href="https://linkedin.com/in/pruthvi-bhat-" class="px-4 py-2 bg-black hover:bg-gray-900 rounded-md transition hover-glow">LinkedIn</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- About Me section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-100">
+          <h2 class="text-3xl font-bold section-heading">About Me</h2>
+          <div class="prose prose-lg prose-invert max-w-none">
+            <p>
+              I'm an innovative thinker driven to build impactful, human-centered systems. My approach leverages a unique combination of AI, biotechnology, and human behavior (and more) to solve complex challenges from a systems-thinking perspective. I'm a full-stack builder with a track record of translating ideas into real-world solutions, from developing data pipelines to creating user-friendly front ends.
+            </p>
+            <p>
+              Key Highlights:
+            </p>
+            <ul>
+              <li>Developed "Leads Wizard," an AI-powered lead engagement system that improved user sentiment by 45.9% and increased lead retention to 95.12%, using strategic prompt engineering and user-centric design that I was able to rapidly prototype and deploy.</li>
+              <li>Established a centralized study resource for a biotechnology association, creating long-term mentorship and training programs and demonstrating leadership abilities from the ground up.</li>
+              <li>Led cross-functional initiatives in content creation and workflow automation, implementing innovative approaches that reduced turnaround time by 25% and improved efficiency for multiple teams.</li>
+            </ul>
+            <p>
+              I'm passionate about building innovative systems and am eager to explore new ways to connect technology with human needs. I am always excited to push boundaries and connect with fellow innovators.
+            </p>
+          </div>
+        </section>
+        
+        <!-- Skills section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-200">
+          <h2 class="text-3xl font-bold section-heading">Skills</h2>
+          
+          <div class="space-y-8">
+            {Object.entries(skills).map(([category, skillList]) => (
+              <div class="mb-6">
+                <h3 class="text-xl font-semibold mb-4 text-green-400">{category}</h3>
+                <div class="flex flex-wrap gap-3">
+                  {skillList.map(skill => (
+                    <span class="px-4 py-2 skill-tag rounded-md text-sm">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+        
+        <!-- Experience section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-300">
+          <h2 class="text-3xl font-bold section-heading">Experience</h2>
+          
+          <div class="mt-8">
+            {experiences.map((experience) => (
+              <div class="timeline-item">
+                <h3 class="text-xl font-bold">{experience.title}</h3>
+                <p class="text-green-400 mb-2">{experience.company} | {experience.period}</p>
+                <ul class="mt-2 space-y-1">
+                  {experience.achievements.map(achievement => (
+                    <li class="flex items-start">
+                      <span class="text-green-500 mr-2">•</span>
+                      <span>{achievement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+        
+        <!-- Education section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-400">
+          <h2 class="text-3xl font-bold section-heading">Education</h2>
+          
+          <div class="mt-8">
+            <div class="timeline-item">
+              <h3 class="text-xl font-bold">Bachelor of Engineering - BE, Biotechnology</h3>
+              <p class="text-green-400 mb-2">B. M. S. College of Engineering | 2020 - 2024</p>
+            </div>
+            <div class="timeline-item">
+              <h3 class="text-xl font-bold">High School Diploma, Science (PCMB)</h3>
+              <p class="text-green-400 mb-2">National Public School</p>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Tools section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-400">
+          <h2 class="text-3xl font-bold section-heading">Tools & Technologies</h2>
+          
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            {tools.map(toolCategory => (
+              <div>
+                <h3 class="text-xl font-semibold mb-4 text-green-400">{toolCategory.category}</h3>
+                <div class="space-y-4">
+                  {toolCategory.items.map(tool => (
+                    <div class="bg-black p-4 rounded-lg flex items-center hover-glow cursor-default">
+                      <div class="mr-4">
+                        <div class="w-10 h-10 flex items-center justify-center bg-gradient-to-br from-green-900 to-green-700 rounded-full text-xl">
+                          🔧
+                        </div>
+                      </div>
+                      <div>
+                        <h4 class="font-medium">{tool.name}</h4>
+                        <p class="text-sm text-gray-400">{tool.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+        
+        <!-- Certifications section -->
+        <section class="glass-card p-8 mb-12 animate-fade delay-450">
+          <h2 class="text-3xl font-bold section-heading">Certifications</h2>
+          
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-black p-4 rounded-lg hover-glow cursor-default">
+              <h3 class="font-semibold text-green-400 mb-1">Basic Image Classification with TensorFlow</h3>
+            </div>
+            <div class="bg-black p-4 rounded-lg hover-glow cursor-default">
+              <h3 class="font-semibold text-green-400 mb-1">Machine Learning with ChatGPT: Image Classification Model</h3>
+            </div>
+            <div class="bg-black p-4 rounded-lg hover-glow cursor-default">
+              <h3 class="font-semibold text-green-400 mb-1">MATLAB Onramp</h3>
+            </div>
+            <div class="bg-black p-4 rounded-lg hover-glow cursor-default">
+              <h3 class="font-semibold text-green-400 mb-1">AI for Good</h3>
+            </div>
+            <div class="bg-black p-4 rounded-lg hover-glow cursor-default">
+              <h3 class="font-semibold text-green-400 mb-1">AI For Everyone</h3>
+            </div>
+          </div>
+        </section>
+        
+        <!-- Contact section -->
+        <section class="glass-card p-8 animate-fade delay-500">
+          <h2 class="text-3xl font-bold section-heading">Contact</h2>
+          
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {contactInfo.map(item => (
+              item.isButton ? (
+                <a href={item.link} class="contact-button text-center py-4 px-6 rounded-lg text-white font-medium text-lg col-span-full md:col-span-2 md:w-1/2 md:mx-auto mt-4">
+                  {item.value}
+                </a>
+              ) : (
+                <a href={item.link} class="bg-black p-4 rounded-lg hover-glow">
+                  <h3 class="font-semibold text-green-400 mb-1">{item.type}</h3>
+                  <p class="text-gray-300">{item.value}</p>
+                </a>
+              )
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</PageLayout>
