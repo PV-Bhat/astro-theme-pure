@@ -1,0 +1,288 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  class?: string;
+}
+
+const { headings, class: className = "" } = Astro.props;
+
+// Filter headings to only include h2 (top-level)
+// We'll only show top-level headings to match the example
+const filteredHeadings = headings.filter(heading => heading.depth === 2);
+---
+
+<cascading-toc class={`${className}`}>
+  <div class="toc-container sticky top-24 overflow-hidden">
+    <h3 class="font-semibold mb-4 text-white">TABLE OF CONTENTS</h3>
+    
+    <div class="toc-items">
+      <ul class="flex flex-col">
+        {filteredHeadings.map((heading) => (
+          <li class="toc-item relative">
+            {/* Vertical indicator line */}
+            <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-[#56bdf8] opacity-0 indicator-line"></div>
+            
+            {/* Background highlight */}
+            <a 
+              href={`#${heading.slug}`} 
+              data-slug={heading.slug}
+              class="block py-2 px-4 text-gray-400 hover:text-white transition-all rounded-md"
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</cascading-toc>
+
+<style>
+  .toc-container {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(169, 169, 169, 0.2) transparent;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+  }
+  
+  .toc-container::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .toc-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .toc-container::-webkit-scrollbar-thumb {
+    background-color: rgba(169, 169, 169, 0.2);
+    border-radius: 10px;
+  }
+  
+  .toc-item {
+    transition: all 0.3s ease;
+  }
+  
+  .toc-item.highlight-primary a {
+    color: white;
+    background-color: rgb(20, 20, 25);
+  }
+  
+  .toc-item.highlight-secondary a {
+    color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(20, 20, 25, 0.5);
+  }
+  
+  .toc-item.highlight-tertiary a {
+    color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(20, 20, 25, 0.2);
+  }
+  
+  .indicator-line {
+    transition: opacity 0.3s ease;
+  }
+  
+  .toc-item.highlight-primary .indicator-line {
+    opacity: 1;
+  }
+  
+  .toc-item.highlight-secondary .indicator-line {
+    opacity: 0.6;
+  }
+  
+  .toc-item.highlight-tertiary .indicator-line {
+    opacity: 0.3;
+  }
+</style>
+
+<script>
+  class CascadingTOC extends HTMLElement {
+    headings: HTMLElement[] = [];
+    tocItems: {
+      element: HTMLElement;
+      link: HTMLAnchorElement;
+      indicator: HTMLElement;
+      slug: string;
+    }[] = [];
+    
+    // Section positions cache
+    sectionPositions: Map<string, {
+      top: number;
+      bottom: number;
+      element: HTMLElement;
+    }> = new Map();
+    
+    // Animation frame handle for scroll events
+    animationFrame: number | null = null;
+    
+    constructor() {
+      super();
+      this.initialize();
+    }
+    
+    initialize() {
+      // Find all section headings and their containers
+      this.headings = Array.from(
+        document.querySelectorAll('section[id], main section, article section, div[id]')
+      ) as HTMLElement[];
+      
+      // If no explicit sections, find headings
+      if (this.headings.length === 0) {
+        this.headings = Array.from(
+          document.querySelectorAll('h2[id], h3[id]')
+        ) as HTMLElement[];
+      }
+      
+      // Get all TOC items
+      this.tocItems = Array.from(this.querySelectorAll('.toc-item')).map(item => {
+        const link = item.querySelector('a') as HTMLAnchorElement;
+        const indicator = item.querySelector('.indicator-line') as HTMLElement;
+        const slug = link.getAttribute('data-slug') || '';
+        
+        return { 
+          element: item as HTMLElement, 
+          link, 
+          indicator, 
+          slug 
+        };
+      });
+      
+      // Calculate initial section positions
+      this.calculateSectionPositions();
+      
+      // Setup click handlers for smooth scrolling
+      this.setupSmoothScrolling();
+      
+      // Handle initial position (if page loaded with hash)
+      this.handleScrollUpdate();
+      
+      // Start listening for scroll events
+      window.addEventListener('scroll', this.handleScroll.bind(this), { passive: true });
+      
+      // Recalculate positions on window resize
+      window.addEventListener('resize', () => {
+        this.calculateSectionPositions();
+        this.handleScrollUpdate();
+      }, { passive: true });
+    }
+    
+    calculateSectionPositions() {
+      // For each heading/section, calculate its position
+      this.headings.forEach(heading => {
+        // First check if heading has an ID
+        const id = heading.id;
+        if (!id) return;
+        
+        // Get the actual section element (either the heading itself or its parent section)
+        const section = heading.tagName.toLowerCase() === 'section' ? 
+          heading : heading.closest('section') || heading;
+        
+        // Calculate position relative to document
+        const rect = section.getBoundingClientRect();
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        
+        this.sectionPositions.set(id, {
+          top: rect.top + scrollTop,
+          bottom: rect.bottom + scrollTop,
+          element: section
+        });
+      });
+    }
+    
+    setupSmoothScrolling() {
+      this.tocItems.forEach(({ link, slug }) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetElement = document.getElementById(slug);
+          if (targetElement) {
+            // Update URL hash
+            history.pushState(null, '', `#${slug}`);
+            // Smooth scroll to target
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    }
+    
+    handleScroll() {
+      // Use requestAnimationFrame to limit updates
+      if (this.animationFrame) {
+        cancelAnimationFrame(this.animationFrame);
+      }
+      
+      this.animationFrame = requestAnimationFrame(() => {
+        this.handleScrollUpdate();
+      });
+    }
+    
+    handleScrollUpdate() {
+      // Current scroll position
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const viewportMiddle = scrollTop + (windowHeight / 2);
+      
+      // Find all visible sections and get their distance from viewport center
+      const visibleSections = Array.from(this.sectionPositions.entries())
+        .filter(([_, data]) => {
+          // Section is visible if its top is above the bottom of viewport
+          // and its bottom is below the top of viewport
+          return data.top < (scrollTop + windowHeight) && data.bottom > scrollTop;
+        })
+        .map(([id, data]) => {
+          // Calculate distance from center of viewport
+          const distance = Math.abs(((data.top + data.bottom) / 2) - viewportMiddle);
+          return { id, distance, data };
+        })
+        .sort((a, b) => a.distance - b.distance); // Sort by distance
+      
+      // Reset all highlights
+      this.tocItems.forEach(item => {
+        item.element.classList.remove('highlight-primary', 'highlight-secondary', 'highlight-tertiary');
+      });
+      
+      // If no sections are visible, highlight the one closest to the viewport
+      if (visibleSections.length === 0) {
+        const closestSection = Array.from(this.sectionPositions.entries())
+          .map(([id, data]) => {
+            // Calculate distance from center of viewport
+            const midpoint = (data.top + data.bottom) / 2;
+            const distance = Math.abs(midpoint - viewportMiddle);
+            return { id, distance, data };
+          })
+          .sort((a, b) => a.distance - b.distance)[0]; // Get closest
+        
+        if (closestSection) {
+          this.highlightTOCItem(closestSection.id, 'primary');
+        }
+        return;
+      }
+      
+      // Apply cascading highlights based on visibility and distance
+      visibleSections.forEach((section, index) => {
+        if (index === 0) {
+          // Primary highlight for most centered section
+          this.highlightTOCItem(section.id, 'primary');
+        } else if (index === 1 || index === 2) {
+          // Secondary highlight for close sections
+          this.highlightTOCItem(section.id, 'secondary');
+        } else if (index <= 4) {
+          // Tertiary highlight for other visible sections
+          this.highlightTOCItem(section.id, 'tertiary');
+        }
+      });
+    }
+    
+    highlightTOCItem(sectionId: string, level: 'primary' | 'secondary' | 'tertiary') {
+      // Find the TOC item corresponding to this section
+      const tocItem = this.tocItems.find(item => item.slug === sectionId);
+      if (tocItem) {
+        tocItem.element.classList.add(`highlight-${level}`);
+      }
+    }
+  }
+
+  customElements.define('cascading-toc', CascadingTOC);
+</script>

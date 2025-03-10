@@ -24,105 +24,7 @@ const { class: className } = Astro.props;
 
         <!-- Desktop Navigation -->
         <div class="hidden lg:flex lg:items-center lg:gap-12 transition-all duration-300 group-[.not-top]:gap-8">
-          <!-- All Pages Dropdown -->
-          <div class="relative group/dropdown">
-            <button class="flex items-center gap-1 text-gray-200 hover:text-white transition-colors nav-link-oval">
-              All Pages
-              <svg 
-                class="h-4 w-4 transition-transform group-hover/dropdown:rotate-180" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  stroke-linecap="round" 
-                  stroke-linejoin="round" 
-                  stroke-width="2" 
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-              <span class="hover-oval"></span>
-            </button>
-
-            <!-- Mega Menu Dropdown -->
-            <div class="invisible opacity-0 group-hover/dropdown:visible group-hover/dropdown:opacity-100 absolute top-full left-1/2 -translate-x-1/2 w-[90vw] max-w-4xl mt-3 transition-all duration-300">
-              <div class="relative">
-                <!-- Backdrop and overlay -->
-                <div class="absolute inset-0 rounded-2xl glass border border-white/10"></div>
-                
-                <!-- Content -->
-                <div class="relative grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 p-6 md:p-8 text-gray-200">
-                  <!-- Main Pages -->
-                  <div>
-                    <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">MAIN</h3>
-                    <ul class="space-y-3">
-                      <li>
-                        <a href="/about" class="block hover:text-white transition-colors nav-link-oval">
-                          About
-                          <span class="hover-oval"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="/blog" class="block hover:text-white transition-colors nav-link-oval">
-                          Blog
-                          <span class="hover-oval"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="/projects" class="block hover:text-white transition-colors nav-link-oval">
-                          Projects
-                          <span class="hover-oval"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="/links" class="block hover:text-white transition-colors nav-link-oval">
-                          Links
-                          <span class="hover-oval"></span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  
-                  <!-- Resources -->
-                  <div>
-                    <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">RESOURCES</h3>
-                    <ul class="space-y-3">
-                      <li>
-                        <a href="/docs" class="block hover:text-white transition-colors nav-link-oval">
-                          Documentation
-                          <span class="hover-oval"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="/archives" class="block hover:text-white transition-colors nav-link-oval">
-                          Archives
-                          <span class="hover-oval"></span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  
-                  <!-- Featured Section -->
-                  <div class="md:col-span-2 relative">
-                    <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">FEATURED</h3>
-                    
-                    <div class="bg-black border border-[#34D399]/20 rounded-xl p-5">
-                      <h4 class="font-medium text-[#34D399] mb-1">Featured Projects</h4>
-                      <p class="text-sm text-gray-300 mb-3">Explore my latest projects and experiments</p>
-                      
-                      <a href="/projects/featured" class="inline-flex items-center text-[#34D399] hover:text-white transition-colors nav-link-oval">
-                        <span>View featured projects</span>
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                        </svg>
-                        <span class="hover-oval"></span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          
           
           <!-- Navigation Links -->
           <a href="/about" class="text-gray-200 hover:text-white transition-colors nav-link-oval">
@@ -137,8 +39,122 @@ const { class: className } = Astro.props;
             <span>Projects</span>
             <span class="hover-oval"></span>
           </a>
-          <a href="/docs" class="text-gray-200 hover:text-white transition-colors nav-link-oval">
-            <span>Docs</span>
+                    <!-- All Pages Dropdown -->
+                    <div class="relative group/dropdown">
+                      <button class="flex items-center gap-1 text-gray-200 hover:text-white transition-colors nav-link-oval">
+                        All Pages
+                        <svg 
+                          class="h-4 w-4 transition-transform group-hover/dropdown:rotate-180" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            stroke-width="2" 
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                        <span class="hover-oval"></span>
+                      </button>
+          
+                      <!-- Mega Menu Dropdown -->
+                      <div class="invisible opacity-0 group-hover/dropdown:visible group-hover/dropdown:opacity-100 absolute top-full left-1/2 -translate-x-1/2 w-[90vw] max-w-4xl mt-3 transition-all duration-300">
+                        <div class="relative">
+                          <!-- Backdrop and overlay -->
+                          <div class="absolute inset-0 rounded-2xl glass border border-white/10"></div>
+                          
+                          <!-- Content -->
+                          <div class="relative grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 p-6 md:p-8 text-gray-200">
+                            <!-- Main Pages -->
+                            <div>
+                              <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">MAIN</h3>
+                              <ul class="space-y-3">
+                                <li>
+                                  <a href="/about" class="block hover:text-white transition-colors nav-link-oval">
+                                    About
+                                    <span class="hover-oval"></span>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="/blog" class="block hover:text-white transition-colors nav-link-oval">
+                                    Blog
+                                    <span class="hover-oval"></span>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="/projects" class="block hover:text-white transition-colors nav-link-oval">
+                                    Projects
+                                    <span class="hover-oval"></span>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="/links" class="block hover:text-white transition-colors nav-link-oval">
+                                    Links
+                                    <span class="hover-oval"></span>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="/search" class="block hover:text-white transition-colors nav-link-oval">
+                                    Search
+                                    <span class="hover-oval"></span>
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                            
+                            <!-- Resources -->
+                            <div>
+                              <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">RESOURCES</h3>
+                              <ul class="space-y-3">
+                                <li>
+                                  <a href="/about/resume" class="block hover:text-white transition-colors nav-link-oval">
+                                    Resume
+                                    <span class="hover-oval"></span>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="/archives" class="block hover:text-white transition-colors nav-link-oval">
+                                    Archives
+                                    <span class="hover-oval"></span>
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                            
+                            <!-- Featured Section -->
+                            <div class="md:col-span-2 relative">
+                              <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">FEATURED</h3>
+                              
+                              <div class="bg-black border border-[#34D399]/20 rounded-xl p-5">
+                                <h4 class="font-medium text-[#34D399] mb-1">Featured Projects</h4>
+                                <p class="text-sm text-gray-300 mb-3">Explore my latest projects and experiments</p>
+                                
+                                <a href="/projects/featured" class="inline-flex items-center text-[#34D399] hover:text-white transition-colors nav-link-oval">
+                                  <span>View featured projects</span>
+                                  <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                  </svg>
+                                  <span class="hover-oval"></span>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+          <a href="/about/resume" class="text-gray-200 hover:text-white transition-colors nav-link-oval">
+            <span>Resume</span>
+            <span class="hover-oval"></span>
+          </a>
+
+          <!-- Search Button -->
+          <a href="/search" class="text-gray-200 hover:text-white transition-colors nav-link-oval flex items-center gap-1">
+            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span>Search</span>
             <span class="hover-oval"></span>
           </a>
           
@@ -163,7 +179,7 @@ const { class: className } = Astro.props;
                   <h3 class="text-sm font-medium uppercase text-gray-400 mb-4">CONTACT</h3>
                   <ul class="space-y-3">
                     <li>
-                      <a href="mailto:contact@example.com" class="flex items-center hover:text-white transition-colors nav-link-oval">
+                      <a href="mailto:astroagario03@gmail.com" class="flex items-center hover:text-white transition-colors nav-link-oval">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
@@ -172,7 +188,7 @@ const { class: className } = Astro.props;
                       </a>
                     </li>
                     <li>
-                      <a href="https://linkedin.com/in/example" target="_blank" class="flex items-center hover:text-white transition-colors nav-link-oval">
+                      <a href="https://linkedin.com/in/pruthvi-bhat-" target="_blank" class="flex items-center hover:text-white transition-colors nav-link-oval">
                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z"></path>
                         </svg>
@@ -233,8 +249,12 @@ const { class: className } = Astro.props;
           <span>Projects</span>
           <span class="hover-oval"></span>
         </a>
-        <a href="/docs" class="text-2xl text-white nav-link-oval inline-block">
-          <span>Docs</span>
+        <a href="/about/resume" class="text-2xl text-white nav-link-oval inline-block">
+          <span>Resume</span>
+          <span class="hover-oval"></span>
+        </a>
+        <a href="/search" class="text-2xl text-white nav-link-oval inline-block">
+          <span>Search</span>
           <span class="hover-oval"></span>
         </a>
         <a href="/archives" class="text-2xl text-white nav-link-oval inline-block">
@@ -249,7 +269,7 @@ const { class: className } = Astro.props;
       
       <div class="mt-auto pt-8">
         <GradientButton 
-          href="mailto:contact@example.com"
+          href="mailto:astroagario03@gmail.com"
           text="Contact Me"
           primaryColor="52, 211, 153"
           secondaryColor="5, 150, 105"

@@ -20,13 +20,13 @@ const filteredHeadings = headings.filter(
     <h3 class="font-semibold mb-4 text-white">TABLE OF CONTENTS</h3>
     
     <nav class="toc-container">
-      <ul class="space-y-2 text-sm">
+      <ul class="space-y-0.5 text-sm">
         {filteredHeadings.map((heading) => (
           <li class={`toc-item relative ${heading.depth === 3 ? "ml-3" : ""}`}>
-            <div class="toc-progress absolute left-0 top-0 w-[2px] h-0 bg-gradient-to-b from-[#56bdf8] to-[#ec4899] rounded-full"></div>
+            <div class="toc-indicator absolute left-0 top-0 h-full w-[2px] rounded-full bg-gradient-to-b from-[#56bdf8] to-[#ec4899] opacity-0"></div>
             <a 
               href={`#${heading.slug}`} 
-              class="toc-link block py-1 pl-3 rounded-md text-gray-400 hover:text-white transition-colors"
+              class="toc-link block py-2 pl-3 rounded-r-md text-gray-400 hover:text-white transition-all duration-300"
             >
               {heading.text}
             </a>
@@ -41,32 +41,137 @@ const filteredHeadings = headings.filter(
   class TOCComponent extends HTMLElement {
     constructor() {
       super();
-      this.setupIntersectionObserver();
+      this.init();
     }
 
-    setupIntersectionObserver() {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            const id = entry.target.getAttribute('id');
-            const tocLink = this.querySelector(`a[href="#${id}"]`);
-            const tocProgress = tocLink?.previousElementSibling;
-            
-            if (entry.isIntersecting) {
-              tocLink?.classList.add('active');
-              tocProgress?.classList.add('active', 'readed');
-            } else {
-              tocLink?.classList.remove('active');
-              tocProgress?.classList.remove('active');
-            }
-          });
-        },
-        { rootMargin: '-100px 0px -66%' }
+    init() {
+      // Find all headings in the document
+      const headings = Array.from(
+        document.querySelectorAll('main h2, main h3, article h2, article h3')
       );
-
-      // Observe all section headings
-      document.querySelectorAll('h2, h3').forEach((heading) => {
-        observer.observe(heading);
+      
+      // Get all TOC items
+      const tocLinks = Array.from(this.querySelectorAll('.toc-link'));
+      const tocItems = Array.from(this.querySelectorAll('.toc-item'));
+      const indicators = Array.from(this.querySelectorAll('.toc-indicator'));
+      // Set up scroll tracking
+      this.trackScrollPosition(headings as HTMLElement[], tocLinks as HTMLElement[], tocItems as HTMLElement[], indicators as HTMLElement[]);
+      
+      // Set up smooth scrolling
+      this.setupSmoothScrolling(tocLinks as HTMLElement[], headings as HTMLElement[]);      
+    }
+    
+    // Track and update TOC based on scroll position
+    trackScrollPosition(headings: HTMLElement[], tocLinks: HTMLElement[], tocItems: HTMLElement[], indicators: HTMLElement[]) {
+      // Store element positions and visibility
+      const elementData = new Map();
+      
+      // Update on scroll using requestAnimationFrame
+      let ticking = false;
+      
+      const updatePositions = () => {
+        const scrollPosition = window.scrollY;
+        const viewportHeight = window.innerHeight;
+        const middleY = scrollPosition + (viewportHeight / 2);
+        
+        // Calculate each heading's position
+        headings.forEach((heading) => {
+          if (!heading.id) return;
+          
+          const rect = heading.getBoundingClientRect();
+          const topPos = rect.top + scrollPosition;
+          const bottomPos = rect.bottom + scrollPosition;
+          const centerPos = (topPos + bottomPos) / 2;
+          
+          // Check if heading is visible
+          const isVisible = (topPos < (scrollPosition + viewportHeight)) && 
+                            (bottomPos > scrollPosition);
+          
+          // Calculate distance from viewport center
+          const distanceFromMiddle = Math.abs(centerPos - middleY);
+          
+          // Store this data
+          elementData.set(heading.id, {
+            isVisible,
+            distanceFromMiddle,
+            topPos,
+            bottomPos
+          });
+        });
+        
+        // Get all visible headings sorted by distance from center
+        const visibleElements = [...elementData.entries()]
+          .filter(([_, data]) => data.isVisible)
+          .sort((a, b) => a[1].distanceFromMiddle - b[1].distanceFromMiddle);
+        // Reset all highlights
+        tocItems.forEach((item: HTMLElement, i: number) => {
+          item.classList.remove('primary', 'secondary', 'tertiary');
+          tocLinks[i].classList.remove('active');
+          indicators[i].style.opacity = "0";
+        });
+        
+        // Apply cascading highlights
+        visibleElements.forEach(([id, _], index) => {
+          const linkIndex = tocLinks.findIndex((link: HTMLElement) => {
+            const href = link.getAttribute('href');
+            return href === `#${id}`;
+          });
+          
+          if (linkIndex === -1) return;
+          
+          // Define priority based on position
+          if (index < 2) {
+            // Primary highlight (closest to center)
+            tocItems[linkIndex].classList.add('primary');
+            tocLinks[linkIndex].classList.add('active');
+            indicators[linkIndex].style.opacity = "1";
+          } else if (index < 4) {
+            // Secondary highlight
+            tocItems[linkIndex].classList.add('secondary');
+            indicators[linkIndex].style.opacity = "0.6";
+          } else {
+            // Tertiary highlight
+            tocItems[linkIndex].classList.add('tertiary');
+            indicators[linkIndex].style.opacity = "0.3";
+          }
+        });
+        
+        ticking = false;
+      };
+      
+      // Handle scroll events
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updatePositions();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+      
+      // Initial position check
+      updatePositions();
+    }
+    // Set up smooth scrolling when clicking TOC links
+    setupSmoothScrolling(tocLinks: HTMLElement[], headings: HTMLElement[]) {
+      tocLinks.forEach((link: HTMLElement) => {
+        link.addEventListener('click', (e: Event) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href')?.substring(1);
+          if (!targetId) return;
+          
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            // Update URL hash
+            history.pushState(null, "", link.getAttribute('href') || "#");
+            
+            // Smooth scroll
+            targetElement.scrollIntoView({
+              behavior: 'smooth'
+            });
+          }
+        });
       });
     }
   }
@@ -75,33 +180,70 @@ const filteredHeadings = headings.filter(
 </script>
 
 <style>
-  .toc-item {
-    position: relative;
-    transition: all 0.3s ease;
+  .toc-container {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(169, 169, 169, 0.2) transparent;
+  }
+  
+  .toc-container::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .toc-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .toc-container::-webkit-scrollbar-thumb {
+    background-color: rgba(169, 169, 169, 0.2);
+    border-radius: 10px;
+  }
+  
+  /* TOC item styling for different priorities */
+  .toc-item.primary .toc-link {
+    color: white;
+    background-color: rgba(15, 15, 20, 0.7);
+    transform: translateX(2px);
+  }
+  
+  .toc-item.secondary .toc-link {
+    color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(15, 15, 20, 0.4);
+    transform: translateX(1px);
+  }
+  
+  .toc-item.tertiary .toc-link {
+    color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(15, 15, 20, 0.2);
   }
   
   .toc-link {
     position: relative;
     display: block;
     transition: all 0.3s ease;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
   }
   
   .toc-link.active {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: white;
-    transform: translateX(2px);
+    font-weight: 500;
   }
   
-  .toc-progress {
-    transition: height 0.3s ease, opacity 0.3s ease;
+  .toc-indicator {
+    transition: opacity 0.3s ease;
   }
   
-  .toc-progress.readed {
-    height: 100%;
-    opacity: 0.5;
+  .toc-item.primary .toc-indicator {
+    animation: pulse-glow 2s ease-in-out infinite;
   }
   
-  .toc-progress.active {
-    opacity: 1;
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 3px rgba(86, 189, 248, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 5px rgba(236, 73, 153, 0.5);
+    }
   }
-</style> 
+</style>
