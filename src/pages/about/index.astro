@@ -1,8 +1,7 @@
 ---
 import { Image } from 'astro:assets'
-import PageLayout from '@/layouts/ContentLayout.astro'
+import PageLayout from '@/layouts/CommonPage.astro'
 import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
-import CascadingTOC from '../../components/blog/TableOfContents.astro'
 import CardHover from '@/components/ui/CardHover.astro'
 import config from '../../site.config'
 import '../../styles/animations.css'
@@ -43,16 +42,19 @@ const skills = {
 }
 
 const meta = {
-  title: `About | ${config.title}`, 
-  description: `About ${config.title}`
+  title: `About`, 
+  description: `About Pruthvi Bhat`,
 }
 ---
 
-<PageLayout {meta}>
-  <CascadingTOC headings={headings} slot="sidebar" />
-  
-  <Fragment slot="header">
-    <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+<PageLayout 
+  title={`About`}
+  {headings} 
+  info={{ slug: '/about', hideComment: true }}
+>
+<Breadcrumbs items={breadcrumbItems} class="mb-6" />
+ 
+    
     <div class="flex flex-col md:flex-row items-center gap-8 mb-8">
       <div class="w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden flex-shrink-0 border-4 border-green-900 relative group">
         <div class="w-full h-full bg-gradient-to-br from-gray-800 to-green-900 flex items-center justify-center text-4xl">
@@ -86,11 +88,10 @@ const meta = {
         </div>
       </div>
     </div>
-  </Fragment>
 
   <!-- Introduction Section -->
   <section id="introduction" class="mb-16 animate-fade">
-    <h2 class="text-3xl font-bold mb-6 relative">
+    <h2 id="introduction" class="text-3xl font-bold mb-6 relative">
       Introduction
       <span class="absolute bottom-0 left-0 w-16 h-1 bg-gradient-to-r from-green-500 to-blue-500"></span>
     </h2>
@@ -126,7 +127,7 @@ const meta = {
   
   <!-- Background Section -->
   <section id="background" class="mb-16 animate-fade delay-100">
-    <h2 class="text-3xl font-bold mb-6 relative">
+    <h2 id="background" class="text-3xl font-bold mb-6 relative">
       Background
       <span class="absolute bottom-0 left-0 w-16 h-1 bg-gradient-to-r from-green-500 to-blue-500"></span>
     </h2>
@@ -182,7 +183,7 @@ const meta = {
   
   <!-- Expertise Section -->
   <section id="expertise" class="mb-16 animate-fade delay-200">
-    <h2 class="text-3xl font-bold mb-6 relative">
+    <h2 id="expertise" class="text-3xl font-bold mb-6 relative">
       Expertise & Skills
       <span class="absolute bottom-0 left-0 w-16 h-1 bg-gradient-to-r from-green-500 to-blue-500"></span>
     </h2>
@@ -271,7 +272,7 @@ const meta = {
   
   <!-- Philosophy Section -->
   <section id="philosophy" class="mb-16 animate-fade delay-300">
-    <h2 class="text-3xl font-bold mb-6 relative">
+    <h2 id="philosophy" class="text-3xl font-bold mb-6 relative">
       My Philosophy
       <span class="absolute bottom-0 left-0 w-16 h-1 bg-gradient-to-r from-green-500 to-blue-500"></span>
     </h2>
@@ -326,35 +327,20 @@ const meta = {
   </section>
   
   <!-- Resume Section -->
-  <section id="resume" class="mb-16 animate-fade delay-400">
-    <h2 class="text-3xl font-bold mb-6 relative">
-      Resume
-      <span class="absolute bottom-0 left-0 w-16 h-1 bg-gradient-to-r from-green-500 to-blue-500"></span>
-    </h2>
-    
-    <div class="prose prose-lg prose-invert max-w-none">
-      <p>
-        Interested in a more detailed look at my professional experience, education, and certifications? View my full resume to learn more about my background and accomplishments.
-      </p>
-      
-      <div class="mt-8 flex justify-center md:justify-start">
-        <a href="/about/resume" class="resume-button text-center py-4 px-6 rounded-lg text-white font-medium text-lg inline-flex items-center gap-3 group">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="16" y1="13" x2="8" y2="13"></line>
-            <line x1="16" y1="17" x2="8" y2="17"></line>
-            <polyline points="10 9 9 9 8 9"></polyline>
-          </svg>
-          View Full Resume
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-1">
-            <path d="M5 12h14"></path>
-            <path d="m12 5 7 7-7 7"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </section>
+<section id="resume" class="mb-16 animate-fade delay-300">
+  <h2 id="resume" class="text-3xl font-bold mb-6 relative">
+    Resume
+    <span class="absolute bottom-0 left-0 w-16 h-1 bg-gradient-to-r from-green-500 to-blue-500"></span>
+  </h2>
+  <div class="prose prose-lg prose-invert max-w-none">
+    <p>
+      Interested in a more detailed look at my professional experience, education, and certifications? View my full resume to learn more about my background and accomplishments.
+    </p>
+  </div>
+  <a href="/about/resume" class="btn btn-primary mt-4">
+    View Full Resume
+  </a>
+</section>
 </PageLayout>
 
 <style>

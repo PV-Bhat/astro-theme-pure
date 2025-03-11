@@ -10,6 +10,8 @@ import '../styles/glass.css'
 interface Props {
 	meta?: SiteMeta
 	highlightColor?: string
+	title?: string
+	description?: string
 }
 
 const {
@@ -119,12 +121,12 @@ const {
 
 	/* Set highlight color */
 	:global(.highlight) {
-		color: var(--highlightColor, rgb(52, 211, 153)) !important;
+		color: var(--highlightColor, rgb(71, 233, 125)) !important;
 	}
 	:global(.highlight-bg) {
 		background-color: var(
 			--highlightColor,
-			rgb(52, 211, 153)
+			rgb(71, 233, 125))
 		) !important;
 	}
 	
