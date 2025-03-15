@@ -68,8 +68,7 @@ const paginationProps = {
 
 <PageLayout {meta}>
   <div class="max-w-4xl mx-auto">
-    <!-- Breadcrumbs navigation -->
-    <Breadcrumbs items={breadcrumbItems} class="mb-6" />
+    <!-- Only redirect for the index page (/blog), not the paginated pages -->
     
     <div class="flex flex-col md:flex-row gap-8">
       <!-- Main content -->
@@ -86,7 +85,7 @@ const paginationProps = {
                   <span class='text-muted-foreground'>
                     Page {page.currentPage} - Showing {page.data.length} of {collectionsCount} posts
                   </span>
-                  <a aria-label='View all blog by years' href='/archives' data-astro-prefetch>
+                  <a aria-label='View all blog by years' href='/blog/all' data-astro-prefetch>
                     View all posts by years →
                   </a>
                 </div>

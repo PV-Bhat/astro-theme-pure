@@ -1,0 +1,279 @@
+---
+import { Image } from 'astro:assets'
+import { getBlogCollection, getUniqueTags, sortMDByDate, groupCollectionsByYear } from 'astro-pure/server'
+import { Button, FormattedDate, Icon } from 'astro-pure/user'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumbs from '@/components/core/Breadcrumbs.astro'
+import config from '../../site.config'
+import '../../styles/animations.css'
+import '../../styles/glass.css'
+
+// Breadcrumb items
+const breadcrumbItems = [
+  {
+    label: "Blog",
+    href: "/blog"
+  },
+  {
+    label: "All Posts",
+    href: "/blog/all"
+  }
+];
+
+const meta = {
+  title: 'All Blog Posts',
+  description: 'Browse all blog posts by year',
+}
+
+// Get all blog posts
+const allPosts = await getBlogCollection();
+const sortedPosts = sortMDByDate(allPosts);
+
+// Simulate archive posts with philosophy tags (in a real implementation, these would be marked with an isArchive field)
+const regularPosts = sortedPosts.filter(post => 
+  post.data && post.data.tags && Array.isArray(post.data.tags) && 
+  !post.data.tags.some(tag => ["philosophy", "mind", "reflection", "thinking"].includes(tag.toLowerCase()))
+);
+
+const archivePosts = sortedPosts.filter(post => 
+  post.data && post.data.tags && Array.isArray(post.data.tags) && 
+  post.data.tags.some(tag => ["philosophy", "mind", "reflection", "thinking"].includes(tag.toLowerCase()))
+);
+
+// Get the search params to check if archives should be included (defaulting to true)
+const { searchParams } = Astro.url;
+const includeArchives = searchParams.get('archives') !== 'false';
+
+// Combine posts based on inclusion setting
+const combinedPosts = includeArchives ? [...regularPosts, ...archivePosts] : regularPosts;
+
+// Group posts by year
+const postsByYear = groupCollectionsByYear(combinedPosts);
+
+// Sort years in descending order (newest first)
+const sortedYears = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a));
+
+// Function to format date
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+}
+---
+
+<PageLayout {meta}>
+  <div class="max-w-3xl mx-auto px-4">
+    <!-- Breadcrumbs navigation -->
+    <div class="mb-6">
+      <Breadcrumbs items={breadcrumbItems} />
+    </div>
+    
+    <!-- Back button, matching original theme style -->
+    <div class="mb-4">
+      <a href="/blog" class="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/50 backdrop-blur-sm text-gray-200 transition-all hover:bg-gray-700/70 hover:translate-x-[-4px]">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+  </svg>
+  Back to Blog
+</a>
+    </div>
+    
+    <!-- Header with silver text effect -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-400 silver-text">
+        All Posts
+      </h1>
+      
+      <!-- Filter controls -->
+      <div class="flex flex-wrap gap-4 mb-4">
+        <div class="glass-card px-4 py-2 rounded-lg inline-flex items-center border border-white/10">
+          <span class="text-sm text-gray-300">
+            <span class="font-medium text-green-400">{combinedPosts.length}</span> posts in total
+          </span>
+        </div>
+        
+        <!-- Sort controls -->
+        <div class="flex gap-2">
+          <a 
+            href="/blog/all?sort=newest" 
+            class={`glass-card px-3 py-1 rounded-full inline-flex items-center gap-1 border ${searchParams.get('sort') !== 'oldest' ? 'border-green-500/30 bg-green-500/10 text-green-400' : 'border-white/10 hover:border-white/20 text-gray-400 hover:text-gray-300'} text-sm transition-colors`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+            <span>Newest</span>
+          </a>
+          
+          <a 
+            href="/blog/all?sort=oldest" 
+            class={`glass-card px-3 py-1 rounded-full inline-flex items-center gap-1 border ${searchParams.get('sort') === 'oldest' ? 'border-green-500/30 bg-green-500/10 text-green-400' : 'border-white/10 hover:border-white/20 text-gray-400 hover:text-gray-300'} text-sm transition-colors`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            <span>Oldest</span>
+          </a>
+        </div>
+        
+        <!-- Include Archives toggle -->
+        <div class="flex items-center">
+          <label class="flex items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              id="archive-toggle"
+              checked={includeArchives} 
+              class="sr-only peer"
+            >
+            <div class="relative w-9 h-5 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
+            <span class="ml-2 text-sm text-gray-300">Include Archives</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Posts by Year - Timeline Style -->
+    <div class="space-y-12 mb-16">
+      {sortedYears.map(year => (
+        <div>
+          <div class="sticky top-24 z-10 backdrop-blur-sm mb-6">
+            <h2 class="text-2xl font-bold inline-flex items-center glass-card px-3 py-1 rounded-lg border border-white/10 bg-black/30">{year}</h2>
+          </div>
+          
+          <div class="space-y-4 pl-4 border-l border-gray-800">
+            {postsByYear[year].map((post) => {
+              const isArchive = post.data && post.data.tags && Array.isArray(post.data.tags) && 
+              post.data.tags.some(tag => 
+                ["philosophy", "mind", "reflection", "thinking"].includes(tag.toLowerCase())
+              );
+              
+              return (
+                <div class={`relative group ${isArchive ? 'archive-post' : ''}`}>
+                  <!-- Timeline dot -->
+                  <div class={`absolute -left-[17px] h-3 w-3 rounded-full ${isArchive ? 'bg-gray-700 border border-gray-600 group-hover:border-green-500' : 'bg-green-900 border border-green-700 group-hover:border-green-400'} transition-colors duration-300`}></div>
+                  
+                  <a href={`/blog/${post.slug}`} class="block glass-card p-4 rounded-lg hover:border-green-500/20 border border-white/5 transition-all duration-300 transform hover:translate-x-1">
+                    <div class="flex items-start justify-between gap-4">
+                      <div class="flex-grow">
+                        <div class="flex items-center gap-2 mb-1">
+                          {post.data && post.data.publishDate ? (
+                            <FormattedDate date={post.data.publishDate} class="text-sm text-gray-400" />
+                          ) : (
+                            <span class="text-sm text-gray-400">No date</span>
+                          )}
+                          {isArchive && (
+                            <span class="px-1.5 py-0.5 text-xs rounded-full bg-gray-800 text-gray-400 border border-gray-700">Archive</span>
+                          )}
+                        </div>
+                        <h3 class="text-lg font-medium group-hover:text-green-400 transition-colors mb-1">{post.data.title}</h3>
+                        <p class="text-sm text-gray-400 line-clamp-2">{post.data.description}</p>
+                        
+                        {post.data.tags && post.data.tags.length > 0 && (
+                          <div class="flex flex-wrap gap-2 mt-2">
+                            {post.data.tags.slice(0, 3).map(tag => (
+                              <a href={`/tags/${tag}`} class="text-xs px-2 py-0.5 rounded-full bg-black/30 text-gray-300 hover:bg-green-500/10 hover:text-green-300 transition-colors">
+                                {tag}
+                              </a>
+                            ))}
+                            {post.data.tags.length > 3 && (
+                              <span class="text-xs px-2 py-0.5 rounded-full bg-black/30 text-gray-400">+{post.data.tags.length - 3} more</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {post.data.heroImage && !isArchive && (
+                        <div class="flex-shrink-0 h-16 w-16 rounded overflow-hidden hidden sm:block">
+                          <Image 
+                            src={post.data.heroImage.src}
+                            alt={post.data.heroImage.alt || post.data.title}
+                            width={post.data.heroImage.width || 64}
+                            height={post.data.heroImage.height || 64}
+                            inferSize={post.data.heroImage.inferSize}
+                            class="h-full w-full object-cover"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+      
+      {combinedPosts.length === 0 && (
+        <div class="py-10 text-center">
+          <p class="text-gray-400">No posts available with current filters.</p>
+        </div>
+      )}
+    </div>
+    
+    <!-- Return to blog link -->
+    <div class="text-center mb-16">
+      <a href="/blog" class="inline-flex items-center text-green-400 hover:text-green-300 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to blog home
+      </a>
+    </div>
+  </div>
+</PageLayout>
+
+<style>
+  /* Silver text effect */
+  .silver-text {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Glass card styling */
+  .glass-card {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+</style>
+
+<script>
+  // Handle archive toggle functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const archiveToggle = document.getElementById('archive-toggle') as HTMLInputElement;
+    
+    if (archiveToggle) {
+      archiveToggle.addEventListener('change', () => {
+        // Get current URL and parameters
+        const url = new URL(window.location.href);
+        
+        // Update the archives parameter based on the toggle state
+        if (archiveToggle.checked) {
+          url.searchParams.delete('archives');
+        } else {
+          url.searchParams.set('archives', 'false');
+        }
+        
+        // Navigate to the updated URL
+        window.location.href = url.toString();
+      });
+    }
+    
+    // Add sorting functionality
+    const sortLinks = document.querySelectorAll('a[href*="sort="]');
+    sortLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = (link as HTMLAnchorElement).href;
+        const url = new URL(href);
+        
+        // Preserve the archives parameter when changing sort
+        if (!archiveToggle?.checked) {
+          url.searchParams.set('archives', 'false');
+        }
+        
+        window.location.href = url.toString();
+      });
+    });
+  });
+</script>

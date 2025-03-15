@@ -66,7 +66,7 @@ const { items, class: className = "" } = Astro.props;
               class={`
                 flex items-center gap-1 transition-all duration-300 relative whitespace-nowrap
                 ${index === items.length - 1 
-                  ? 'text-[#a9a9a9] font-medium pointer-events-none' 
+                  ? 'text-[#34d399] font-medium pointer-events-none' 
                   : 'text-gray-400 hover:text-white breadcrumb-link'}
               `}
               aria-current={index === items.length - 1 ? 'page' : undefined}
@@ -76,7 +76,7 @@ const { items, class: className = "" } = Astro.props;
               {index === items.length - 1 && (
                 <span class="animate-pulse-subtle">
                   <span class="sr-only">Current page</span>
-                  <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#a9a9a9]"></span>
+                  <span class="inline-block h-1.5 w-1.5 rounded-full bg-[#34d399]"></span>
                 </span>
               )}
             </a>
